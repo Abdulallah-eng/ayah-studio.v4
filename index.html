@@ -1,0 +1,1779 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f6b55">
+<meta name="description" content="Make Quran recitation shorts with synced verses, translations and backgrounds.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ayah Studio">
+<title>Ayah Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600&family=Lateef&family=Markazi+Text:wght@400;600&family=Harmattan&family=Noto+Kufi+Arabic:wght@400;600&family=Reem+Kufi:wght@400;600&family=El+Messiri:wght@400;600&family=Aref+Ruqaa&family=Rakkas&family=Nunito:wght@400;600&family=Lora:wght@400;600&family=Merriweather:wght@400;700&family=Playfair+Display:wght@400;600&family=Cormorant+Garamond:wght@500;600&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#f3f1ec; --panel:#ffffff; --fg:#1d2422; --muted:#6b7570; --line:#dfe3df;
+  --accent:#0f6b55; --accent-fg:#fff; --gold:#b8893a;
+  --ui:"Figtree",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#111614; --panel:#19201d; --fg:#e7ece9; --muted:#93a09a; --line:#2a332f; --accent:#3fb592; --accent-fg:#06110d; --gold:#d6aa5c; color-scheme:dark}
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--ui)}
+.app{display:grid;grid-template-columns:340px 1fr;height:100%}
+aside{min-width:0;background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:20px;display:flex;flex-direction:column;gap:18px}
+h1{font-size:20px;margin:0;display:flex;align-items:baseline;gap:10px}
+h1 span{font-family:"Amiri",serif;color:var(--gold);font-size:22px}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+legend{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+select,input[type=number],input[type=text],input[type=password]{width:100%;min-width:0;max-width:100%;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px}
+input[type=range]{accent-color:var(--accent)}
+input[type=color]{width:100%;height:36px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+button{font:600 14px var(--ui);border-radius:6px;padding:10px 14px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+button.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.check{flex-direction:row;align-items:center;gap:8px;color:var(--fg)}
+main{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;min-width:0}
+canvas{height:min(78vh,820px);aspect-ratio:9/16;max-width:100%;border-radius:10px;box-shadow:0 20px 50px rgba(0,0,0,.25);background:#000}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#status{font-size:13px;color:var(--muted);min-height:1.4em;text-align:center;max-width:460px}
+progress{width:min(420px,90%);accent-color:var(--accent)}
+.stock{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.sub{font-size:13px;font-weight:600}
+.hint{font-size:12px;color:var(--muted)}
+.search{display:flex;gap:6px}.search input{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:4px 10px;font-weight:500;font-size:12px;border-radius:99px}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.results button{padding:0;border-radius:6px;overflow:hidden;aspect-ratio:9/16;position:relative;border:2px solid transparent}
+.results button.sel{border-color:var(--accent)}
+.results img{width:100%;height:100%;object-fit:cover;display:block}
+.results span{position:absolute;right:4px;bottom:4px;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:1px 5px;border-radius:4px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#installBtn{padding:7px 12px;font-size:13px}
+body{padding-top:env(safe-area-inset-top,0px)}
+@media (max-width:820px){main{order:-1;position:sticky;top:0;z-index:2;background:var(--bg);padding-block:10px}
+}
+@media (display-mode:standalone){#installBtn{display:none}}
+@media (max-width:820px){.app{grid-template-columns:minmax(0,1fr);height:auto}aside{border-right:0;border-bottom:1px solid var(--line);overflow:visible}canvas{height:40vh;width:auto;max-height:480px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="top"><h1>Ayah Studio <span>استوديو الآيات</span></h1><button id="installBtn" class="primary" hidden>Install app</button></div>
+
+  <fieldset>
+    <legend>Verses</legend>
+    <label>Surah <select id="surah"><option>Loading…</option></select></label>
+    <div class="row">
+      <label>From ayah <input id="from" type="number" min="1" value="1"></label>
+      <label>To ayah <input id="to" type="number" min="1" value="5"></label>
+    </div>
+    <label>Reciter
+      <select id="reciter">
+        <optgroup label="Exact word timing">
+        <option value="7">Mishary Rashid Alafasy</option>
+        <option value="2">AbdulBaset AbdulSamad (Murattal)</option>
+        <option value="1">AbdulBaset AbdulSamad (Mujawwad)</option>
+        <option value="3">Abdur-Rahman as-Sudais</option>
+        <option value="4">Abu Bakr al-Shatri</option>
+        <option value="5">Hani ar-Rifai</option>
+        <option value="6">Mahmoud Khalil Al-Husary</option>
+        <option value="12">Mahmoud Khalil Al-Husary (Muallim, teaching pace)</option>
+        <option value="9">Mohamed Siddiq al-Minshawi (Murattal)</option>
+        <option value="10">Sa'ud ash-Shuraym</option>
+        <option value="97">Yasser Ad-Dossary</option>
+        <option value="161">Khalifah Al-Tunaiji</option>
+        </optgroup>
+        <optgroup label="Estimated timing (EveryAyah.com)">
+        <option value="ea:Abdullaah_3awwaad_Al-Juhaynee_128kbps">Abdullah Al-Juhany</option>
+        <option value="ea:Abdullah_Basfar_192kbps">Abdullah Basfar</option>
+        <option value="ea:Abdullah_Matroud_128kbps">Abdullah Matroud</option>
+        <option value="ea:ahmed_ibn_ali_al_ajamy_128kbps">Ahmed Al-Ajamy</option>
+        <option value="ea:Ahmed_Neana_128kbps">Ahmed Neana</option>
+        <option value="ea:Akram_AlAlaqimy_128kbps">Akram Al-Alaqimy</option>
+        <option value="ea:Husary_128kbps_Mujawwad">Al-Husary Mujawwad</option>
+        <option value="ea:Minshawy_Mujawwad_192kbps">Al-Minshawi Mujawwad</option>
+        <option value="ea:Hudhaify_128kbps">Ali Al-Hudhaify</option>
+        <option value="ea:Ali_Hajjaj_AlSuesy_128kbps">Ali Hajjaj Al-Suesy</option>
+        <option value="ea:Ali_Jaber_64kbps">Ali Jaber</option>
+        <option value="ea:aziz_alili_128kbps">Aziz Alili</option>
+        <option value="ea:Fares_Abbad_64kbps">Fares Abbad</option>
+        <option value="ea:Ibrahim_Akhdar_32kbps">Ibrahim Al-Akhdar</option>
+        <option value="ea:Karim_Mansoori_40kbps">Karim Mansoori</option>
+        <option value="ea:Khaalid_Abdullaah_al-Qahtaanee_192kbps">Khalid Al-Qahtani</option>
+        <option value="ea:MaherAlMuaiqly128kbps">Maher Al-Muaiqly</option>
+        <option value="ea:Mahmoud_Ali_Al_Banna_32kbps">Mahmoud Ali Al-Banna</option>
+        <option value="ea:Mohammad_al_Tablaway_128kbps">Muhammad Al-Tablawi</option>
+        <option value="ea:Muhammad_Ayyoub_128kbps">Muhammad Ayyub</option>
+        <option value="ea:Muhammad_Jibreel_128kbps">Muhammad Jibreel</option>
+        <option value="ea:Muhsin_Al_Qasim_192kbps">Muhsin Al-Qasim</option>
+        <option value="ea:Mustafa_Ismail_48kbps">Mustafa Ismail</option>
+        <option value="ea:Nabil_Rifa3i_48kbps">Nabil Ar-Rifai</option>
+        <option value="ea:Nasser_Alqatami_128kbps">Nasser Al-Qatami</option>
+        <option value="ea:Ghamadi_40kbps">Saad Al-Ghamdi</option>
+        <option value="ea:Sahl_Yassin_128kbps">Sahl Yassin</option>
+        <option value="ea:Salah_Al_Budair_128kbps">Salah Al-Budair</option>
+        <option value="ea:Salaah_AbdulRahman_Bukhatir_128kbps">Salah Bukhatir</option>
+        <option value="ea:Yaser_Salamah_128kbps">Yaser Salamah</option>
+        </optgroup>
+      </select>
+    </label>
+    <span class="hint" id="recHint" hidden>This reciter has no word timings, so the app estimates them. Words can be up to about a second off. It works best with "Whole ayah" and no word highlight.</span>
+    <label>Translation
+      <select id="translation">
+        <option value="20">English, Saheeh International</option>
+        <option value="85">English, Abdel Haleem</option>
+        <option value="27">German, Bubenheim &amp; Elyas</option>
+        <option value="77">Turkish, Diyanet</option>
+        <option value="31">French, Hamidullah</option>
+        <option value="0">None</option>
+      </select>
+    </label>
+    <button class="primary" id="load">Load verses</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>Auto-generate</legend>
+    <div class="row">
+      <label>How many shorts <input id="bCount" type="number" min="1" max="100" value="10"></label>
+      <label>Verse picking
+        <select id="bMode">
+          <option value="curated">Famous passages</option>
+          <option value="surahs">Complete short surahs</option>
+          <option value="sections">Thematic sections (rukūʿ)</option>
+          <option value="order">Series: selected surah, section by section</option>
+        </select>
+      </label>
+    </div>
+    <label id="bThemeWrap">Theme (famous passages)
+      <select id="bTheme">
+        <option value="all">All themes</option>
+        <option value="dua">Duas from the Quran</option>
+        <option value="mercy">Hope and mercy</option>
+        <option value="patience">Patience and trust</option>
+        <option value="tawhid">Allah and His signs</option>
+        <option value="akhirah">Death and the hereafter</option>
+        <option value="guidance">Guidance and character</option>
+      </select>
+    </label>
+    <label id="bPoolWrap">Surahs to pick from
+      <select id="bPool">
+        <option value="juz30">Juz 'Amma (surahs 78–114)</option>
+        <option value="popular">Popular surahs (Fatiha, Kahf, Yasin, Rahman, Mulk…)</option>
+        <option value="all">Whole Quran</option>
+        <option value="current">Only the selected surah</option>
+      </select>
+    </label>
+    <div class="row">
+      <label>Min length (s) <input id="bMin" type="number" min="5" max="170" value="20"></label>
+      <label>Max length (s) <input id="bMax" type="number" min="10" max="180" value="90"></label>
+    </div>
+    <div class="row">
+      <label>Reciter
+        <select id="bReciter">
+          <option value="same">Selected reciter</option>
+          <option value="random">Random each time (exact timing only)</option>
+          <option value="randomAll">Random each time (all reciters)</option>
+        </select>
+      </label>
+      <label>Background
+        <select id="bBg">
+          <option value="stock">Random stock clip</option>
+          <option value="preset">Random preset</option>
+          <option value="keep">Keep current</option>
+        </select>
+      </label>
+    </div>
+    <label class="check" id="bNoPresetWrap"><input id="bNoPreset" type="checkbox" checked> Only real stock videos (never fall back to built-in backgrounds)</label>
+    <label>Text style for each short
+      <select id="bStyle"></select>
+    </label>
+    <div class="row">
+      <button class="primary" id="bStart">Generate shorts</button>
+      <button id="bCancel" disabled>Cancel</button>
+    </div>
+    <span class="hint" id="bStatus">Each short downloads as its own MP4. Chrome may ask once to allow multiple downloads. Click Allow.</span>
+  </fieldset>
+
+  <fieldset>
+    <legend>Background</legend>
+    <label>Preset
+      <select id="bgPreset">
+        <option value="night">Night sky</option>
+        <option value="dawn">Dawn</option>
+        <option value="emerald">Emerald</option>
+        <option value="video">My video file</option>
+      </select>
+    </label>
+    <label>Video file (MP4/WebM, plays muted and loops)<input id="bgFile" type="file" accept="video/*"></label>
+    <div class="stock">
+      <span class="sub">Stock video search</span>
+      <label>Source
+        <select id="pxSource">
+          <option value="pixabay">Pixabay (free key, instant)</option>
+          <option value="pexels">Pexels</option>
+        </select>
+      </label>
+      <label><span id="pxKeyLabel">Pixabay API key</span> <input id="pxKey" type="password" placeholder="Paste your free key" autocomplete="off"></label>
+      <div class="search">
+        <input id="pxQuery" type="text" placeholder="Search clouds, ocean, desert…" aria-label="Search stock videos">
+        <button id="pxGo">Search</button>
+      </div>
+      <div class="chips" id="pxChips"></div>
+      <div class="results" id="pxResults"></div>
+      <button id="pxMore" hidden>Load more</button>
+      <span class="hint" id="pxHint"></span>
+    </div>
+    <label>Darken <input id="darken" type="range" min="0" max="0.85" step="0.05" value="0.45"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Text style</legend>
+    <label>Style preset
+      <select id="stylePreset"></select>
+    </label>
+    <div class="search">
+      <input id="presetName" type="text" placeholder="Name for your style" aria-label="Name for your style" maxlength="30">
+      <button id="presetSave">Save style</button>
+      <button id="presetDelete" hidden>Delete</button>
+    </div>
+    <label>Arabic font
+      <select id="arFont">
+        <option value="Amiri Quran">Amiri Quran (Mushaf style)</option>
+        <option value="Scheherazade New">Scheherazade New (Mushaf style)</option>
+        <option value="Amiri">Amiri (Naskh)</option>
+        <option value="Noto Naskh Arabic">Noto Naskh (clean Naskh)</option>
+        <option value="Lateef">Lateef (Naskh)</option>
+        <option value="Markazi Text">Markazi (book style)</option>
+        <option value="Harmattan">Harmattan (soft Naskh)</option>
+        <option value="Noto Kufi Arabic">Noto Kufi (modern Kufi)</option>
+        <option value="Reem Kufi">Reem Kufi (geometric Kufi)</option>
+        <option value="El Messiri">El Messiri (modern)</option>
+        <option value="Aref Ruqaa">Aref Ruqaa (Ruqʿah calligraphy)</option>
+        <option value="Rakkas">Rakkas (bold display)</option>
+      </select>
+    </label>
+    <label>Words on screen
+      <select id="wps">
+        <option value="0">Whole ayah (long ayahs split to fit)</option>
+        <option value="1">1 word at a time</option>
+        <option value="2">2 words at a time</option>
+        <option value="3">3 words at a time</option>
+        <option value="4">4 words at a time</option>
+        <option value="5">5 words at a time</option>
+        <option value="6">6 words at a time</option>
+        <option value="8">8 words at a time</option>
+      </select>
+    </label>
+    <label>Translation on screen
+      <select id="trMode">
+        <option value="split">Follows the Arabic (split with it)</option>
+        <option value="whole">Whole ayah translation</option>
+        <option value="hide">Hide translation</option>
+      </select>
+    </label>
+    <div class="row">
+      <label>Arabic size <input id="arSize" type="range" min="50" max="150" value="84"></label>
+      <label>Translation size <input id="trSize" type="range" min="24" max="60" value="38"></label>
+    </div>
+    <label>Color theme
+      <select id="colorPreset">
+        <option value="classic">White and gold</option>
+        <option value="emerald">White and emerald</option>
+        <option value="cream">Cream and amber</option>
+        <option value="sky">Ice and sky blue</option>
+        <option value="rose">Blush and rose</option>
+        <option value="night">Lavender night</option>
+        <option value="ink">Dark ink (for light backgrounds)</option>
+        <option value="custom">Custom</option>
+      </select>
+    </label>
+    <div class="row3">
+      <label>Arabic <input id="txtColor" type="color" value="#ffffff"></label>
+      <label>Highlight <input id="hlColor" type="color" value="#f2c46d"></label>
+      <label>Translation <input id="trColor" type="color" value="#ffffff"></label>
+    </div>
+    <span class="sub">Arabic</span>
+    <div class="row">
+      <label>Arabic effect
+        <select id="fx">
+          <option value="shadow">Soft shadow</option>
+          <option value="glow">Glow</option>
+          <option value="outline">Outline</option>
+          <option value="band">Dark band behind text</option>
+          <option value="gradient">Gradient fill</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+      <label>Arabic animation
+        <select id="anim">
+          <option value="fade">Fade in</option>
+          <option value="slide">Slide up</option>
+          <option value="zoom">Zoom in</option>
+          <option value="reveal">Reveal words as recited</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+    </div>
+    <label>Effect color <span class="hint">glow, shadow, outline or band color</span> <input id="fxColor" type="color" value="#000000"></label>
+    <label>Word highlight
+      <select id="hlStyle">
+        <option value="color">Color the recited word</option>
+        <option value="glow">Glow on the recited word</option>
+        <option value="box">Box behind the recited word</option>
+        <option value="underline">Underline the recited word</option>
+        <option value="none">No highlight</option>
+      </select>
+    </label>
+    <div class="row">
+      <label>Ayah number
+        <select id="numStyle">
+          <option value="ornate">Ornate brackets ﴿١﴾</option>
+          <option value="circle">In a circle</option>
+          <option value="plain">Plain number</option>
+          <option value="hidden">Hidden</option>
+        </select>
+      </label>
+      <label>Number color <input id="numColor" type="color" value="#f2c46d"></label>
+    </div>
+    <label>Number size <input id="numSize" type="range" min="0.5" max="1.2" step="0.05" value="0.8"></label>
+    <span class="sub">Translation</span>
+    <label>Translation font
+      <select id="trFont">
+        <option value="Figtree">Figtree (clean)</option>
+        <option value="Nunito">Nunito (rounded)</option>
+        <option value="Lora">Lora (book serif)</option>
+        <option value="Merriweather">Merriweather (strong serif)</option>
+        <option value="Playfair Display">Playfair Display (elegant)</option>
+        <option value="Cormorant Garamond">Cormorant Garamond (classic)</option>
+      </select>
+    </label>
+    <div class="row">
+      <label>Translation effect
+        <select id="trFx">
+          <option value="shadow">Soft shadow</option>
+          <option value="glow">Glow</option>
+          <option value="outline">Outline</option>
+          <option value="band">Dark band behind text</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+      <label>Translation animation
+        <select id="trAnim">
+          <option value="fade">Fade in</option>
+          <option value="delay">Fade in after the Arabic</option>
+          <option value="slide">Slide up</option>
+          <option value="zoom">Zoom in</option>
+          <option value="none">None</option>
+        </select>
+      </label>
+    </div>
+    <span class="sub">Timing and layout</span>
+    <label>Text timing <span class="hint" id="tOffsetVal">on time</span>
+      <input id="tOffset" type="range" min="-1" max="1" step="0.05" value="0">
+    </label>
+    <label>Vertical position <input id="yPos" type="range" min="0.3" max="0.7" step="0.01" value="0.48"></label>
+    <label class="check"><input id="showHeader" type="checkbox" checked> Show surah and reciter names</label>
+    <span class="hint">Kufi, Ruqʿah and display fonts may not show every Quranic mark. Use a Mushaf-style font for full accuracy.</span>
+  </fieldset>
+</aside>
+
+<main>
+  <canvas id="cv" width="1080" height="1920"></canvas>
+  <div class="controls">
+    <button id="play" disabled>Play preview</button>
+    <button id="stop" disabled>Stop</button>
+    <button class="primary" id="export" disabled>Export video</button>
+  </div>
+  <progress id="prog" value="0" max="1" hidden></progress>
+  <div id="status">Choose a surah and ayah range, then press Load verses.</div>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.js"></script>
+<script>
+const API = "https://api.quran.com/api/v4";
+const AUDIO_BASE = "https://verses.quran.com/";
+const W = 1080, H = 1920;
+const $ = id => document.getElementById(id);
+const cv = $("cv"), ctx = cv.getContext("2d");
+const statusEl = $("status");
+
+let chapters = [];
+let project = null;       // {surah, reciterName, ayahs:[{key, words, translation, offset, dur, segs}], buffer, total}
+let audioCtx = null, source = null, startAt = 0, playing = false, recorder = null;
+const bgVideo = document.createElement("video");
+bgVideo.muted = true; bgVideo.loop = true; bgVideo.playsInline = true;
+
+const say = (m) => statusEl.textContent = m;
+
+// ---------- data ----------
+async function getJSON(url){
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(`Request failed (${r.status}): ${url}`);
+  return r.json();
+}
+
+async function loadChapters(){
+  try{
+    const d = await getJSON(`${API}/chapters?language=en`);
+    chapters = d.chapters;
+    $("surah").innerHTML = chapters.map(c =>
+      `<option value="${c.id}">${c.id}. ${c.name_simple} (${c.name_arabic}) · ${c.verses_count} ayahs</option>`).join("");
+    $("surah").value = "1";
+    $("to").value = 7;
+  }catch(e){ say("Couldn't reach the Quran.com API. Check your internet connection and reload."); }
+}
+
+$("surah").addEventListener("change", () => {
+  const c = chapters.find(c => c.id == $("surah").value);
+  $("from").max = $("to").max = c.verses_count;
+  $("from").value = 1; $("to").value = Math.min(c.verses_count, 5);
+});
+
+const stripTags = s => s.replace(/<sup[^>]*>.*?<\/sup>/g,"").replace(/<[^>]+>/g,"").trim();
+
+// ---------- word timing repair ----------
+// Finds where the reciter's voice actually starts and ends in an ayah's audio
+function voicedRange(audio){
+  const d = audio.getChannelData(0), sr = audio.sampleRate, win = Math.round(sr * 0.02);
+  const rms = [];
+  for(let i = 0; i + win <= d.length; i += win){
+    let t = 0; for(let j = i; j < i + win; j += 4) t += d[j] * d[j];
+    rms.push(Math.sqrt(t / (win / 4)));
+  }
+  const peak = Math.max(...rms, 1e-6), thr = Math.max(0.01, peak * 0.08);
+  let a = rms.findIndex(v => v > thr), b = rms.length - 1 - [...rms].reverse().findIndex(v => v > thr);
+  if(a < 0){ a = 0; b = rms.length - 1; }
+  return { s: a * 20, e: (b + 1) * 20 };
+}
+// Makes the API's word timestamps match the audio that is actually played.
+// Fixes 0-based word numbers, surah-relative times, and timings recorded at a different speed.
+function fixTimings(raw, audio, words){
+  const content = words.filter(w => !w.end);
+  const v = voicedRange(audio), durMs = audio.duration * 1000;
+  let segs = raw.filter(x => Array.isArray(x) && x.length >= 3)
+    .map(x => { const n = x.length; return { w: +x[n-3], s: +x[n-2], e: +x[n-1] }; })
+    .filter(x => isFinite(x.w) && isFinite(x.s) && isFinite(x.e) && x.e >= x.s)
+    .sort((a, b) => a.s - b.s);
+  if(segs.length && Math.min(...segs.map(x => x.w)) === 0) segs.forEach(x => x.w += 1);
+  const covered = new Set(segs.map(x => x.w)).size;
+  if(!segs.length || covered < content.length * 0.6){
+    // no usable timestamps: pace the words across the recited part by their length
+    const total = content.reduce((t, w) => t + w.text.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, "").length + 1, 0) || 1;
+    let acc = v.s;
+    return content.map(w => {
+      const len = (w.text.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, "").length + 1) / total * (v.e - v.s);
+      const seg = { w: w.pos, s: acc, e: acc + len }; acc += len; return seg;
+    });
+  }
+  const first = segs[0].s, last = Math.max(...segs.map(x => x.e));
+  const span = Math.max(1, last - first), voiced = Math.max(1, v.e - v.s);
+  const offTrack = first > durMs || last > durMs + 300 || span < voiced * 0.85 || span > voiced * 1.15;
+  if(offTrack){
+    const k = voiced / span;
+    segs.forEach(x => { x.s = v.s + (x.s - first) * k; x.e = v.s + (x.e - first) * k; });
+  }
+  return segs;
+}
+
+// ---------- recitation audio with real word timings ----------
+// Quran.com's own player data: one recording per surah, with each word's start and end in milliseconds
+const QDC = "https://api.qurancdn.com/api/qdc/audio/reciters";
+const qdcCache = {};
+async function qdcAudio(surah, recId){
+  const k = surah + "/" + recId;
+  if(qdcCache[k]) return qdcCache[k];
+  const j = await getJSON(`${QDC}/${recId}/audio_files?chapter=${surah}&segments=true`);
+  const f = j.audio_files && j.audio_files[0];
+  if(!f) throw new Error("no recording found for this reciter");
+  const timings = {};
+  (f.verse_timings || []).forEach(t => {
+    timings[t.verse_key] = { from: t.timestamp_from, to: t.timestamp_to, segs: t.segments || [] };
+  });
+  return qdcCache[k] = { url: f.audio_url, size: f.file_size || 0, dur: f.duration || 0, timings };
+}
+const surahBufCache = new Map();
+// Downloads the part of the surah recording that is needed (the whole file when it is small)
+async function surahAudio(info, fromMs, toMs){
+  const whole = !info.size || !info.dur || info.size < 40e6;
+  if(whole){
+    if(!surahBufCache.has(info.url)){
+      const buf = await (await fetch(info.url)).arrayBuffer();
+      surahBufCache.set(info.url, await audioCtx.decodeAudioData(buf));
+      while(surahBufCache.size > 2) surahBufCache.delete(surahBufCache.keys().next().value);
+    }
+    return { buffer: surahBufCache.get(info.url), t0: 0 };
+  }
+  const padMs = 2500;
+  const b0 = Math.max(0, Math.floor(info.size * (fromMs - padMs) / info.dur));
+  const b1 = Math.min(info.size - 1, Math.ceil(info.size * (toMs + padMs) / info.dur));
+  const r = await fetch(info.url, { headers: { Range: `bytes=${b0}-${b1}` } });
+  const buf = await r.arrayBuffer();
+  const decoded = await audioCtx.decodeAudioData(buf);
+  return { buffer: decoded, t0: r.status === 206 ? b0 / info.size * info.dur : 0 };
+}
+function sliceBuffer(src, fromS, toS){
+  const sr = src.sampleRate;
+  const a = Math.max(0, Math.floor(fromS * sr)), b = Math.min(src.length, Math.max(a + 1, Math.ceil(toS * sr)));
+  const out = audioCtx.createBuffer(src.numberOfChannels, b - a, sr);
+  for(let c = 0; c < src.numberOfChannels; c++) out.getChannelData(c).set(src.getChannelData(c).subarray(a, b));
+  return out;
+}
+
+async function loadProject(){
+  stopPlayback();
+  const surah = +$("surah").value, from = +$("from").value, to = +$("to").value;
+  const ch = chapters.find(c => c.id === surah);
+  if(!ch || from < 1 || to < from || to > ch.verses_count){
+    say(`Pick an ayah range between 1 and ${ch ? ch.verses_count : "?"}.`); return;
+  }
+  const recId = $("reciter").value, trId = $("translation").value;
+  $("load").disabled = true;
+  try{
+    say("Fetching verse text…");
+    const tr = trId !== "0" ? `&translations=${trId}` : "";
+    const vd = await getJSON(`${API}/verses/by_chapter/${surah}?words=true&word_fields=text_uthmani&per_page=300${tr}`);
+    say("Fetching recitation timings…");
+    const isEA = recId.startsWith("ea:");
+    const info = isEA ? null : await qdcAudio(surah, recId);
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const verses = vd.verses.filter(v => v.verse_number >= from && v.verse_number <= to);
+    const tms = isEA ? [] : verses.map(v => info.timings[v.verse_key]);
+    if(tms.some(x => !x)) throw new Error("this reciter has no recording for part of that range");
+    const ayahs = [];
+    const makeWords = v => v.words.map(w => ({text: w.text_uthmani, pos: w.position, end: w.char_type_name === "end"}));
+    const cleanSegs = segs => segs.filter(x => Array.isArray(x) && x.length >= 3 && isFinite(x[1]) && isFinite(x[2]));
+    const pushAyah = (v, words, audio, segs) => ayahs.push({
+      key: v.verse_key, num: v.verse_number, words,
+      translation: v.translations && v.translations[0] ? stripTags(v.translations[0].text) : "",
+      audio, segs
+    });
+    if(isEA){
+      // EveryAyah.com: one file per ayah, word timing estimated from the audio
+      const folder = recId.slice(3);
+      for(let i = 0; i < verses.length; i++){
+        const v = verses[i];
+        say(`Downloading audio ${i + 1} of ${verses.length}…`);
+        const url = `https://everyayah.com/data/${folder}/${String(surah).padStart(3, "0")}${String(v.verse_number).padStart(3, "0")}.mp3`;
+        const r = await fetch(url);
+        if(!r.ok) throw new Error(`no audio for ${v.verse_key} with this reciter`);
+        const audio = await audioCtx.decodeAudioData(await r.arrayBuffer());
+        const words = makeWords(v);
+        pushAyah(v, words, audio, fixTimings([], audio, words));
+      }
+    }else if(!info.size || info.size < 40e6){
+      // short surah: cut each ayah out of the timed full-surah recording (exact timings)
+      const pad = 150;
+      const spanFrom = Math.max(0, Math.min(...tms.map(t => { const c = cleanSegs(t.segs); return Math.min(t.from, c.length ? c[0][1] : t.from); })) - pad);
+      const spanTo = Math.max(...tms.map(t => t.to)) + pad;
+      say("Downloading recitation…");
+      const clip = await surahAudio(info, spanFrom, spanTo);
+      verses.forEach((v, i) => {
+        const tm = tms[i], c = cleanSegs(tm.segs);
+        const startMs = Math.max(0, Math.min(tm.from, c.length ? c[0][1] - 80 : tm.from));
+        const audio = sliceBuffer(clip.buffer, (startMs - clip.t0) / 1000, (tm.to - clip.t0) / 1000);
+        const words = makeWords(v);
+        let segs = c.map(x => ({ w: x[0], s: x[1] - startMs, e: x[2] - startMs }));
+        if(segs.length && Math.min(...segs.map(x => x.w)) === 0) segs.forEach(x => x.w += 1);
+        if(segs.length < words.filter(w => !w.end).length * 0.6) segs = fixTimings([], audio, words);
+        pushAyah(v, words, audio, segs);
+      });
+    }else{
+      // long surah (very large file): use the per-ayah file of the same recording and line the timings up with the voice
+      const ad = await getJSON(`${API}/recitations/${recId}/by_chapter/${surah}?per_page=300`);
+      const byKey = Object.fromEntries(ad.audio_files.map(a => [a.verse_key, a]));
+      for(let i = 0; i < verses.length; i++){
+        const v = verses[i], af = byKey[v.verse_key];
+        if(!af) throw new Error(`no audio for ${v.verse_key} with this reciter`);
+        say(`Downloading audio ${i + 1} of ${verses.length}…`);
+        const url = af.url.startsWith("http") ? af.url : (af.url.startsWith("//") ? "https:" + af.url : AUDIO_BASE + af.url);
+        const audio = await audioCtx.decodeAudioData(await (await fetch(url)).arrayBuffer());
+        const words = makeWords(v), c = cleanSegs(tms[i].segs);
+        let segs;
+        if(c.length >= words.filter(w => !w.end).length * 0.6){
+          const vr = voicedRange(audio), first = c[0][1], span = Math.max(1, c.at(-1)[2] - first);
+          const ratio = (vr.e - vr.s) / span, k = Math.abs(ratio - 1) > 0.05 ? ratio : 1;
+          segs = c.map(x => ({ w: x[0], s: vr.s + (x[1] - first) * k, e: vr.s + (x[2] - first) * k }));
+          if(Math.min(...segs.map(x => x.w)) === 0) segs.forEach(x => x.w += 1);
+        }else segs = fixTimings([], audio, words);
+        pushAyah(v, words, audio, segs);
+      }
+    }
+    // stitch audio into one buffer with a short gap between ayahs
+    const gap = 0.35, sr = audioCtx.sampleRate;
+    let total = 0.6; // lead-in
+    ayahs.forEach(a => { a.offset = total; a.dur = a.audio.duration; total += a.dur + gap; });
+    total += 0.6;
+    const out = audioCtx.createBuffer(2, Math.ceil(total * sr), sr);
+    ayahs.forEach(a => {
+      for(let c = 0; c < 2; c++){
+        const src = a.audio.getChannelData(Math.min(c, a.audio.numberOfChannels - 1));
+        out.getChannelData(c).set(src, Math.floor(a.offset * sr));
+      }
+    });
+    project = {
+      surah: ch, reciterName: $("reciter").selectedOptions[0].text.replace(/\s*\(.*\)/, ""),
+      ayahs, buffer: out, total
+    };
+    $("play").disabled = $("export").disabled = false;
+    say(`Ready: ${ch.name_simple} ${from}–${to}, ${total.toFixed(1)} seconds. Press Play preview.`);
+    drawFrame(0);
+  }catch(e){
+    console.error(e);
+    say(`Loading failed: ${e.message}. Try another reciter or a smaller range.`);
+  }finally{ $("load").disabled = false; }
+}
+
+// ---------- background ----------
+const stars = Array.from({length:140}, () => ({x:Math.random()*W, y:Math.random()*H*0.8, r:Math.random()*2+0.5, p:Math.random()*6}));
+// Last good video frame: shown whenever the video is between frames, so it never flashes black
+const frameCache = document.createElement("canvas"); frameCache.width = W; frameCache.height = H;
+const fcx = frameCache.getContext("2d");
+let frameCacheOk = false;
+bgVideo.addEventListener("emptied", () => { frameCacheOk = false; });
+function drawBackground(t){
+  const preset = $("bgPreset").value;
+  if(preset === "video" && (bgVideo.src || frameCacheOk)){
+    if(bgVideo.readyState >= 2 && !bgVideo.seeking && bgVideo.videoWidth){
+      const vw = bgVideo.videoWidth, vh = bgVideo.videoHeight;
+      const scale = Math.max(W / vw, H / vh);
+      const dw = vw * scale, dh = vh * scale;
+      fcx.drawImage(bgVideo, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      frameCacheOk = true;
+    }
+    if(frameCacheOk) ctx.drawImage(frameCache, 0, 0);
+    else { ctx.fillStyle = "#0b1412"; ctx.fillRect(0, 0, W, H); }
+  }else if(preset === "dawn"){
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#1b2240"); g.addColorStop(0.55, "#8a4f6b"); g.addColorStop(1, "#f0a96a");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,230,190,0.35)";
+    ctx.beginPath(); ctx.arc(W/2, H*0.92 - Math.sin(t*0.1)*20, 260, 0, Math.PI*2); ctx.fill();
+  }else if(preset === "emerald"){
+    const g = ctx.createRadialGradient(W/2 + Math.sin(t*0.3)*120, H*0.4, 50, W/2, H/2, H*0.8);
+    g.addColorStop(0, "#1f6b55"); g.addColorStop(1, "#041411");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }else{
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#050a18"); g.addColorStop(1, "#14233d");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    stars.forEach(s => {
+      ctx.globalAlpha = 0.4 + 0.6 * Math.abs(Math.sin(t*0.8 + s.p));
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  }
+  ctx.fillStyle = `rgba(0,0,0,${$("darken").value})`;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// ---------- text style ----------
+const FONTS = {
+  "Amiri Quran":       { lh:1.95, note:"Quranic" },
+  "Scheherazade New":  { lh:1.75, note:"Quranic" },
+  "Amiri":             { lh:1.85, note:"Naskh" },
+  "Noto Naskh Arabic": { lh:1.75, note:"Naskh" },
+  "Lateef":            { lh:1.7,  note:"Naskh" },
+  "Markazi Text":      { lh:1.6,  note:"Naskh" },
+  "Harmattan":         { lh:1.7,  note:"Naskh" },
+  "Noto Kufi Arabic":  { lh:1.75, note:"Kufi" },
+  "Reem Kufi":         { lh:1.6,  note:"Kufi" },
+  "El Messiri":        { lh:1.65, note:"Modern" },
+  "Aref Ruqaa":        { lh:1.8,  note:"Ruqʿah" },
+  "Rakkas":            { lh:1.6,  note:"Display" }
+};
+const COLOR_PRESETS = {
+  classic: { txt:"#ffffff", hl:"#f2c46d", tr:"#ffffff" },
+  emerald: { txt:"#ffffff", hl:"#5fe0b0", tr:"#d9f5ea" },
+  cream:   { txt:"#fbf3e0", hl:"#e7b45a", tr:"#f3e6c8" },
+  sky:     { txt:"#eef6ff", hl:"#8fd3ff", tr:"#d6e9ff" },
+  rose:    { txt:"#fff4f4", hl:"#ff9fb2", tr:"#ffe0e6" },
+  night:   { txt:"#e9e4ff", hl:"#b9a4ff", tr:"#d8d0ff" },
+  ink:     { txt:"#15201c", hl:"#0f6b55", tr:"#23302b" }
+};
+const STYLE_IDS = ["fxColor","numStyle","numColor","numSize","arFont","wps","trMode","tOffset","trFont","trFx","trAnim","arSize","trSize","colorPreset","txtColor","hlColor","trColor","fx","anim","hlStyle","yPos","showHeader","darken"];
+const trFontCss = (size, weight = 400) => `${weight} ${size}px "${$("trFont").value}", "Figtree", sans-serif`;
+const arFontCss = (size) => `${size}px "${$("arFont").value}", "Amiri Quran", "Amiri", serif`;
+function ensureFont(){
+  const f = $("arFont").value;
+  return Promise.all([
+    document.fonts.load(`80px "${f}"`, "بِسْمِ ٱللَّهِ"),
+    document.fonts.load(`40px "${$("trFont").value}"`, "Say, He is Allah")
+  ]).catch(() => {});
+}
+
+// ---------- style presets ----------
+const PRESETS = {
+  "Default": { arFont:"Amiri Quran", wps:"0", trMode:"split", arSize:"84", trSize:"38", colorPreset:"classic",
+    txtColor:"#ffffff", hlColor:"#f2c46d", trColor:"#ffffff", fx:"shadow", fxColor:"#000000", anim:"fade", hlStyle:"color",
+    numStyle:"ornate", numColor:"#f2c46d", numSize:"0.8", trFont:"Figtree", trFx:"shadow", trAnim:"fade" },
+  "Golden glow": { arFont:"Amiri Quran", wps:"0", trMode:"split", arSize:"88", trSize:"36", colorPreset:"custom",
+    txtColor:"#fff8e7", hlColor:"#ffb703", trColor:"#fbe8c0", fx:"glow", fxColor:"#ffd27a", anim:"zoom", hlStyle:"glow",
+    numStyle:"ornate", numColor:"#ffcf6b", numSize:"0.8", trFont:"Playfair Display", trFx:"shadow", trAnim:"delay" },
+  "Minimal white": { arFont:"Scheherazade New", wps:"0", trMode:"whole", arSize:"80", trSize:"34", colorPreset:"custom",
+    txtColor:"#ffffff", hlColor:"#ffffff", trColor:"#e8e8e8", fx:"shadow", fxColor:"#000000", anim:"fade", hlStyle:"none",
+    numStyle:"plain", numColor:"#ffffff", numSize:"0.7", trFont:"Nunito", trFx:"none", trAnim:"delay" },
+  "Emerald calm": { arFont:"Amiri", wps:"0", trMode:"split", arSize:"82", trSize:"36", colorPreset:"emerald",
+    txtColor:"#ffffff", hlColor:"#5fe0b0", trColor:"#d9f5ea", fx:"band", fxColor:"#062a22", anim:"slide", hlStyle:"box",
+    numStyle:"circle", numColor:"#5fe0b0", numSize:"0.75", trFont:"Lora", trFx:"band", trAnim:"slide" },
+  "Word by word": { arFont:"Noto Naskh Arabic", wps:"2", trMode:"split", arSize:"118", trSize:"42", colorPreset:"custom",
+    txtColor:"#ffffff", hlColor:"#f2c46d", trColor:"#ffffff", fx:"outline", fxColor:"#000000", anim:"zoom", hlStyle:"color",
+    numStyle:"ornate", numColor:"#f2c46d", numSize:"0.7", trFont:"Figtree", trFx:"outline", trAnim:"fade" },
+  "Lavender night": { arFont:"Amiri Quran", wps:"0", trMode:"split", arSize:"84", trSize:"36", colorPreset:"night",
+    txtColor:"#e9e4ff", hlColor:"#b9a4ff", trColor:"#d8d0ff", fx:"glow", fxColor:"#8b6dff", anim:"slide", hlStyle:"underline",
+    numStyle:"ornate", numColor:"#b9a4ff", numSize:"0.8", trFont:"Cormorant Garamond", trFx:"glow", trAnim:"delay" },
+  "Reveal": { arFont:"Amiri Quran", wps:"0", trMode:"whole", arSize:"86", trSize:"34", colorPreset:"custom",
+    txtColor:"#ffffff", hlColor:"#5fe0b0", trColor:"#e6f7f0", fx:"shadow", fxColor:"#000000", anim:"reveal", hlStyle:"glow",
+    numStyle:"hidden", numColor:"#5fe0b0", numSize:"0.8", trFont:"Merriweather", trFx:"shadow", trAnim:"delay" },
+  "Modern Kufi": { arFont:"Reem Kufi", wps:"3", trMode:"split", arSize:"104", trSize:"38", colorPreset:"sky",
+    txtColor:"#eef6ff", hlColor:"#8fd3ff", trColor:"#d6e9ff", fx:"outline", fxColor:"#0b2a4a", anim:"zoom", hlStyle:"box",
+    numStyle:"circle", numColor:"#8fd3ff", numSize:"0.7", trFont:"Nunito", trFx:"outline", trAnim:"fade" },
+  "Desert sand": { arFont:"Amiri", wps:"0", trMode:"split", arSize:"86", trSize:"36", colorPreset:"custom",
+    txtColor:"#fff3df", hlColor:"#e9a23b", trColor:"#f6e3c4", fx:"shadow", fxColor:"#3b2208", anim:"slide", hlStyle:"color",
+    numStyle:"ornate", numColor:"#e9a23b", numSize:"0.8", trFont:"Lora", trFx:"shadow", trAnim:"delay" },
+  "Ocean blue": { arFont:"Scheherazade New", wps:"0", trMode:"split", arSize:"84", trSize:"36", colorPreset:"custom",
+    txtColor:"#f2fbff", hlColor:"#4fc3f7", trColor:"#d3eefa", fx:"glow", fxColor:"#1e88e5", anim:"fade", hlStyle:"glow",
+    numStyle:"circle", numColor:"#4fc3f7", numSize:"0.7", trFont:"Nunito", trFx:"shadow", trAnim:"fade" },
+  "Royal gold": { arFont:"Amiri Quran", wps:"0", trMode:"whole", arSize:"90", trSize:"34", colorPreset:"custom",
+    txtColor:"#f5d58a", hlColor:"#ffffff", trColor:"#f1e2b8", fx:"gradient", fxColor:"#000000", anim:"zoom", hlStyle:"glow",
+    numStyle:"ornate", numColor:"#f5d58a", numSize:"0.85", trFont:"Cormorant Garamond", trFx:"shadow", trAnim:"delay" },
+  "Bold outline": { arFont:"Noto Naskh Arabic", wps:"4", trMode:"split", arSize:"104", trSize:"40", colorPreset:"custom",
+    txtColor:"#ffffff", hlColor:"#ffd400", trColor:"#ffffff", fx:"outline", fxColor:"#000000", anim:"zoom", hlStyle:"color",
+    numStyle:"plain", numColor:"#ffd400", numSize:"0.7", trFont:"Merriweather", trFx:"outline", trAnim:"fade" },
+  "One word": { arFont:"Amiri Quran", wps:"1", trMode:"split", arSize:"150", trSize:"44", colorPreset:"custom",
+    txtColor:"#ffffff", hlColor:"#ffffff", trColor:"#e9e9e9", fx:"glow", fxColor:"#ffe6a8", anim:"zoom", hlStyle:"none",
+    numStyle:"ornate", numColor:"#ffe6a8", numSize:"0.6", trFont:"Figtree", trFx:"shadow", trAnim:"fade" },
+  "Calligraphy": { arFont:"Aref Ruqaa", wps:"0", trMode:"whole", arSize:"92", trSize:"34", colorPreset:"cream",
+    txtColor:"#fbf3e0", hlColor:"#e7b45a", trColor:"#f3e6c8", fx:"shadow", fxColor:"#1a1206", anim:"fade", hlStyle:"color",
+    numStyle:"ornate", numColor:"#e7b45a", numSize:"0.8", trFont:"Playfair Display", trFx:"shadow", trAnim:"delay" },
+  "Rose soft": { arFont:"Scheherazade New", wps:"0", trMode:"split", arSize:"84", trSize:"36", colorPreset:"rose",
+    txtColor:"#fff4f4", hlColor:"#ff9fb2", trColor:"#ffe0e6", fx:"glow", fxColor:"#ff8fa3", anim:"slide", hlStyle:"underline",
+    numStyle:"circle", numColor:"#ff9fb2", numSize:"0.7", trFont:"Cormorant Garamond", trFx:"none", trAnim:"delay" },
+  "Neon green": { arFont:"Amiri", wps:"3", trMode:"split", arSize:"100", trSize:"38", colorPreset:"custom",
+    txtColor:"#eafff4", hlColor:"#39ff9e", trColor:"#c9ffe3", fx:"glow", fxColor:"#00c46a", anim:"zoom", hlStyle:"glow",
+    numStyle:"plain", numColor:"#39ff9e", numSize:"0.7", trFont:"Figtree", trFx:"glow", trAnim:"fade" },
+  "Light background": { arFont:"Amiri Quran", wps:"0", trMode:"split", arSize:"84", trSize:"36", colorPreset:"ink",
+    txtColor:"#15201c", hlColor:"#0f6b55", trColor:"#23302b", fx:"band", fxColor:"#ffffff", anim:"fade", hlStyle:"color",
+    numStyle:"ornate", numColor:"#0f6b55", numSize:"0.8", trFont:"Lora", trFx:"band", trAnim:"fade" },
+  "Mushaf page": { arFont:"Amiri Quran", wps:"0", trMode:"hide", arSize:"80", trSize:"36", colorPreset:"custom",
+    txtColor:"#ffffff", hlColor:"#ffffff", trColor:"#ffffff", fx:"shadow", fxColor:"#000000", anim:"fade", hlStyle:"none",
+    numStyle:"ornate", numColor:"#f2c46d", numSize:"0.85", trFont:"Figtree", trFx:"shadow", trAnim:"fade" }
+};
+function userPresets(){ try{ return JSON.parse(localStorage.getItem("ayahUserPresets")) || {}; }catch(e){ return {}; } }
+function allPresets(){ return { ...PRESETS, ...userPresets() }; }
+function currentStyle(){
+  const o = {}; Object.keys(PRESETS["Default"]).forEach(id => { o[id] = $(id).value; }); return o;
+}
+function applyPreset(name){
+  const p = allPresets()[name]; if(!p) return;
+  Object.entries(p).forEach(([id, v]) => { if($(id)) $(id).value = v; });
+  saveStyle(); ensureFont().then(() => { if(!playing) drawFrame(0.0001); });
+}
+function fillPresetMenus(selected){
+  const mine = Object.keys(userPresets());
+  const opts = (extra) => extra + `<optgroup label="Built-in">${Object.keys(PRESETS).map(n => `<option value="${n}">${n}</option>`).join("")}</optgroup>` +
+    (mine.length ? `<optgroup label="My styles">${mine.map(n => `<option value="${n}">${n}</option>`).join("")}</optgroup>` : "");
+  $("stylePreset").innerHTML = opts(`<option value="">Custom (your current settings)</option>`);
+  const b = $("bStyle").value;
+  $("bStyle").innerHTML = opts(`<option value="current">Current text style</option><option value="random">Random preset each short</option>`);
+  $("bStyle").value = b && [...$("bStyle").options].some(o => o.value === b) ? b : "current";
+  $("stylePreset").value = selected || "";
+  $("presetDelete").hidden = !userPresets()[$("stylePreset").value];
+}
+function saveStyle(){
+  const o = {}; STYLE_IDS.forEach(id => { const el = $(id); o[id] = el.type === "checkbox" ? el.checked : el.value; });
+  try{ localStorage.setItem("ayahStyle", JSON.stringify(o)); }catch(e){}
+}
+function loadStyle(){
+  let o = null; try{ o = JSON.parse(localStorage.getItem("ayahStyle")); }catch(e){}
+  if(!o) return;
+  STYLE_IDS.forEach(id => { const el = $(id); if(!el || o[id] == null) return; if(el.type === "checkbox") el.checked = o[id]; else el.value = o[id]; });
+}
+
+// ---------- text layout ----------
+function wrapWords(words, maxW){ // words in reading order (RTL)
+  const lines = []; let cur = [], curW = 0;
+  const space = ctx.measureText(" ").width;
+  words.forEach(w => {
+    w.w = ctx.measureText(w.text).width;
+    if(cur.length && curW + space + w.w > maxW){ lines.push({words:cur, width:curW}); cur = []; curW = 0; }
+    curW += (cur.length ? space : 0) + w.w; cur.push(w);
+  });
+  if(cur.length) lines.push({words:cur, width:curW});
+  return {lines, space};
+}
+function wrapText(text, maxW){
+  const out = []; let line = "";
+  text.split(/\s+/).filter(Boolean).forEach(word => {
+    const test = line ? line + " " + word : word;
+    if(ctx.measureText(test).width > maxW && line){ out.push(line); line = word; } else line = test;
+  });
+  if(line) out.push(line);
+  return out;
+}
+// waqf (pause) marks: natural places to split a long ayah
+const WAQF = /[ۖ-ۜ]/;
+function splitEven(words, k){
+  // k pages of near-equal size, nudged to end right after a pause mark when one is close
+  const n = words.length, cuts = [];
+  for(let i = 1; i < k; i++){
+    let c = Math.round(n * i / k);
+    for(const d of [0, 1, -1, 2, -2]){
+      const j = c + d;
+      if(j > (cuts.at(-1) || 0) + 0 && j < n && WAQF.test(words[j - 1].text)){ c = j; break; }
+    }
+    c = Math.max((cuts.at(-1) || 0) + 1, Math.min(n - (k - i), c));
+    cuts.push(c);
+  }
+  const out = []; let s = 0;
+  [...cuts, n].forEach(c => { out.push(words.slice(s, c)); s = c; });
+  return out;
+}
+function sliceWords(text, from, to){ // proportional slice of a translation
+  const w = text.split(/\s+/).filter(Boolean);
+  return w.slice(Math.round(w.length * from), Math.round(w.length * to)).join(" ");
+}
+function layoutBox(){
+  const header = $("showHeader").checked;
+  return { top: header ? 340 : 140, bottom: header ? H - 230 : H - 140 };
+}
+// Build the "pages" for one ayah: what is on screen at once, and when it appears
+function pagesFor(a){
+  const S = { n:$("numStyle").value, ns:$("numSize").value, f:$("arFont").value, wps:$("wps").value, trm:$("trMode").value, ar:$("arSize").value, tr:$("trSize").value, h:$("showHeader").checked };
+  const sig = JSON.stringify(S);
+  if(a._pagesSig === sig) return a._pages;
+  const arSize = +S.ar, lh = (FONTS[S.f] || {lh:1.8}).lh, arLH = arSize * lh;
+  const maxW = W * 0.84, box = layoutBox(), avail = box.bottom - box.top;
+  const content = a.words.filter(w => !w.end), endMark = a.words.find(w => w.end);
+  const words = content.length ? content : a.words;
+  const measure = (ws, trText, trSize) => {
+    ctx.font = arFontCss(arSize);
+    const L = wrapWords(ws, maxW).lines.length;
+    let T = 0;
+    if(trText){ ctx.font = trFontCss(trSize); T = wrapText(trText, W * 0.8).length; }
+    return L * arLH + (T ? 50 + T * trSize * 1.4 + trSize : 0);
+  };
+  let groups;
+  const n = +S.wps, trMode = a.translation ? S.trm : "hide";
+  if(n > 0){
+    groups = []; for(let i = 0; i < words.length; i += n) groups.push(words.slice(i, i + n));
+  }else{
+    for(let k = 1; k <= 14; k++){
+      groups = splitEven(words, Math.min(k, words.length));
+      let ok = true, done = 0;
+      for(const g of groups){
+        const from = done / words.length, to = (done + g.length) / words.length; done += g.length;
+        const fit = trMode === "split" ? [sliceWords(a.translation, from, to), +S.tr]
+                  : trMode === "whole" ? [a.translation, 24] : ["", 0];
+        if(measure(g, fit[0], fit[1]) > avail){ ok = false; break; }
+      }
+      if(ok || k >= words.length) break;
+    }
+  }
+  const ns = $("numStyle").value;
+  if(endMark && ns !== "hidden"){
+    const digits = endMark.text.replace(/[^\u0660-\u0669\u06F0-\u06F90-9]/g, "") || endMark.text;
+    const shown = { ...endMark, num: ns, text: ns === "ornate" ? "\uFD3F" + digits + "\uFD3E" : digits };
+    groups[groups.length - 1] = [...groups[groups.length - 1], shown];
+  }
+  // timing from the reciter's word timestamps (or estimated from word length)
+  const startMs = {};
+  if(a.segs.length) a.segs.forEach(s => { if(startMs[s.w] == null) startMs[s.w] = s.s; });
+  const totalChars = words.reduce((t, w) => t + w.text.length, 0) || 1;
+  let acc = 0; const est = {};
+  words.forEach(w => { est[w.pos] = acc / totalChars * a.dur * 1000; acc += w.text.length; });
+  const wordStart = w => startMs[w.pos] != null ? startMs[w.pos] : est[w.pos];
+  let done = 0;
+  const pages = groups.map((g, i) => {
+    const cnt = g.filter(w => !w.end).length;
+    const from = done / words.length, to = (done + cnt) / words.length; done += cnt;
+    let trText = "";
+    if(trMode === "whole" || (trMode === "split" && groups.length === 1)) trText = a.translation;
+    else if(trMode === "split") trText = sliceWords(a.translation, from, to);
+    return { words:g, start: (i === 0 ? Math.min(wordStart(g[0]), ...(a.segs.length ? a.segs.map(x => x.s) : [wordStart(g[0])])) : wordStart(g[0])) / 1000, trText };
+  });
+  // shrink translation if it still doesn't fit next to the Arabic
+  pages.forEach(p => {
+    p.trSize = +S.tr;
+    while(p.trText && p.trSize > 20 && measure(p.words, p.trText, p.trSize) > avail) p.trSize -= 2;
+    p.arSize = arSize;
+    while(p.arSize > 40 && measure(p.words, "", 0) * (p.arSize / arSize) > avail) p.arSize -= 4; // safety net
+  });
+  a._pagesSig = sig; a._pages = pages;
+  return pages;
+}
+
+// ---------- drawing ----------
+function roundRect(x, y, w, h, r){
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h);
+}
+function hexA(hex, a){
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
+function drawWord(text, x, y, size, color, fx, opts = {}){
+  ctx.shadowBlur = 0; ctx.shadowColor = "transparent";
+  if(fx === "shadow" || fx === "band"){ ctx.shadowColor = opts.fxc ? hexA(opts.fxc, 0.65) : "rgba(0,0,0,0.6)"; ctx.shadowBlur = 18; ctx.shadowOffsetY = 4; }
+  if(fx === "glow"){ ctx.shadowColor = hexA(opts.glow || color, 0.85); ctx.shadowBlur = 34; ctx.shadowOffsetY = 0; }
+  if(fx === "outline"){
+    ctx.lineJoin = "round"; ctx.lineWidth = Math.max(4, size * 0.09); ctx.strokeStyle = opts.fxc ? hexA(opts.fxc, 0.9) : "rgba(0,0,0,0.85)";
+    ctx.strokeText(text, x, y);
+  }
+  if(fx === "gradient" && !opts.solid){
+    const g = ctx.createLinearGradient(0, y - size * 0.9, 0, y + size * 0.25);
+    g.addColorStop(0, opts.light || "#fff"); g.addColorStop(1, color);
+    ctx.fillStyle = g;
+  }else ctx.fillStyle = color;
+  ctx.fillText(text, x, y);
+  if(fx === "glow") ctx.fillText(text, x, y);
+  ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; ctx.shadowColor = "transparent";
+}
+
+function drawFrame(t){
+  ctx.clearRect(0, 0, W, H);
+  drawBackground(t);
+  if(!project) { drawPlaceholder(); return; }
+  const txt = $("txtColor").value, hl = $("hlColor").value, trCol = $("trColor").value, fxc = $("fxColor").value;
+  const fx = $("fx").value, anim = $("anim").value, hlStyle = $("hlStyle").value;
+  const lh = (FONTS[$("arFont").value] || {lh:1.8}).lh;
+
+  if($("showHeader").checked){
+    ctx.textAlign = "center"; ctx.direction = "ltr";
+    ctx.globalAlpha = 0.9;
+    ctx.font = `64px "Amiri Quran", "Amiri", serif`;
+    drawWord(`سورة ${project.surah.name_arabic}`, W/2, 230, 64, txt, fx === "band" ? "shadow" : fx, { solid:true });
+    ctx.font = `500 30px "Figtree", sans-serif`; ctx.globalAlpha = 0.75; ctx.fillStyle = txt;
+    ctx.fillText(project.title ? project.title.toUpperCase() : project.surah.name_simple.toUpperCase(), W/2, 285);
+    ctx.fillText(project.reciterName, W/2, H - 170);
+    ctx.globalAlpha = 1;
+  }
+
+  // current ayah: appears when the reciter starts its first word, and stays until the next ayah begins
+  const off = +$("tOffset").value;
+  const firstWordAt = x => x.offset + off + (x.segs.length ? Math.min(...x.segs.map(g => g.s)) : 0) / 1000;
+  let a = null;
+  for(const x of project.ayahs) if(t >= firstWordAt(x) - 0.15) a = x;
+  if(!a) return; // reciter hasn't started yet: no Arabic, no translation
+  const local = t - a.offset - off, ms = local * 1000;
+  const pages = pagesFor(a);
+  let pi = 0; for(let i = 0; i < pages.length; i++) if(local >= pages[i].start - 0.15) pi = i;
+  const page = pages[pi];
+  const since = local - (page.start - 0.15);
+  const inP = Math.min(1, Math.max(0, since / 0.32));
+  const ease = 1 - Math.pow(1 - inP, 3);
+  const alpha = anim === "none" ? 1 : ease;
+
+  // active word
+  let activePos = -1;
+  if(hlStyle !== "none" || anim === "reveal"){
+    const s = a.segs.find(s => ms >= s.s && ms < s.e);
+    if(s) activePos = s.w;
+  }
+  const reached = w => {
+    if(!a.segs.length) return true;
+    const s = a.segs.find(s => s.w === w.pos);
+    return !s || ms >= s.s - 60;
+  };
+
+  const arSize = page.arSize, arLH = arSize * lh, trSize = page.trSize;
+  ctx.font = arFontCss(arSize);
+  const {lines, space} = wrapWords(page.words, W * 0.84);
+  let trLines = [];
+  if(page.trText){ ctx.font = trFontCss(trSize); trLines = wrapText(page.trText, W * 0.8); }
+  const trLH = trSize * 1.4;
+  const blockH = lines.length * arLH + (trLines.length ? 50 + trLines.length * trLH + trSize : 0);
+  const box = layoutBox();
+  let center = H * +$("yPos").value;
+  center = Math.max(box.top + blockH / 2, Math.min(box.bottom - blockH / 2, center));
+  let y0 = center - blockH / 2;
+
+  // each part has its own animation
+  const chunked = +$("wps").value > 0;
+  const motion = (kind, sinceS) => {
+    const p = Math.min(1, Math.max(0, sinceS / 0.32)), e = 1 - Math.pow(1 - p, 3);
+    if(kind === "none") return { a:1, dy:0, sc:1 };
+    return { a:e, dy: kind === "slide" ? (1 - e) * 60 : 0, sc: kind === "zoom" ? 0.9 + 0.1 * e : 1 };
+  };
+  const arM = motion(anim === "reveal" ? "fade" : anim, since);
+  const trKind = $("trAnim").value, trM = motion(trKind === "delay" ? "fade" : trKind, since - (trKind === "delay" ? 0.55 : 0));
+  const trFxSel = $("trFx").value;
+  const arTop = y0, arH = lines.length * arLH;
+  const trTop = arTop + arH + arLH * 0.38 + 50 - trSize * 1.05, trH = trLines.length ? trLines.length * trLH + trSize : 0;
+  const withMotion = (m, cy, fn) => {
+    ctx.save();
+    ctx.translate(0, m.dy);
+    if(m.sc !== 1){ ctx.translate(W/2, cy); ctx.scale(m.sc, m.sc); ctx.translate(-W/2, -cy); }
+    fn(); ctx.restore();
+  };
+  const band = (x, y, w, h, al, c) => { ctx.globalAlpha = al; ctx.fillStyle = c ? hexA(c, 0.45) : "rgba(0,0,0,0.45)"; roundRect(x, y, w, h, 28); ctx.fill(); };
+
+  // Arabic
+  withMotion(arM, arTop + arH / 2, () => {
+    if(fx === "band"){
+      const bw = Math.min(W - 40, Math.max(...lines.map(l => l.width)) + 90);
+      band(W/2 - bw/2, arTop - 24, bw, arH + 20, arM.a, fxc);
+    }
+    let y = arTop + arLH * 0.68;
+    ctx.textAlign = "right"; ctx.direction = "rtl";
+    ctx.font = arFontCss(arSize);
+    lines.forEach(line => {
+      let x = W/2 + line.width/2;
+      line.words.forEach(w => {
+        const on = w.pos === activePos && !w.end;
+        let wa = arM.a;
+        // word-by-word reveal only for whole ayahs; a chunk of N words always appears together
+        if(anim === "reveal" && !chunked){
+          if(!w.end && !reached(w)) wa = 0;
+          if(w.end && pi === pages.length - 1 && a.segs.length && ms < a.segs.at(-1).s) wa = 0;
+        }
+        ctx.globalAlpha = wa;
+        if(wa > 0 && w.end){
+          const nsz = arSize * (+$("numSize").value), nc = $("numColor").value;
+          ctx.font = arFontCss(nsz);
+          const nw = ctx.measureText(w.text).width;
+          const yy = y - (arSize - nsz) * 0.35;
+          if(w.num === "circle"){
+            ctx.strokeStyle = nc; ctx.lineWidth = Math.max(3, nsz * 0.06);
+            ctx.beginPath(); ctx.arc(x - w.w / 2, yy - nsz * 0.32, Math.max(nw, nsz * 0.5) * 0.85, 0, Math.PI * 2); ctx.stroke();
+          }
+          ctx.textAlign = "center";
+          drawWord(w.text, x - w.w / 2, yy, nsz, nc, fx === "gradient" ? "shadow" : fx, { glow: nc, solid: true });
+          ctx.textAlign = "right"; ctx.font = arFontCss(arSize);
+        }else if(wa > 0){
+          if(on && hlStyle === "box"){
+            ctx.fillStyle = hexA(hl, 0.32);
+            roundRect(x - w.w - 14, y - arSize * 0.95, w.w + 28, arSize * 1.45, 18); ctx.fill();
+          }
+          // 1) the Arabic effect, always in its own effect color
+          const color = on && hlStyle === "color" ? hl : txt;
+          const wfxc = on && hlStyle !== "none" ? hl : fxc; // the recited word's effect takes the highlight color
+          drawWord(w.text, x, y, arSize, color, fx, { glow: wfxc, fxc: wfxc, light: "#ffffff", solid: on && hlStyle === "color" });
+          // 2) the word highlight, layered on top without replacing the effect
+          if(on && hlStyle === "glow"){
+            ctx.shadowColor = hexA(hl, 0.95); ctx.shadowBlur = 38; ctx.fillStyle = txt === hl ? "#ffffff" : txt;
+            ctx.fillText(w.text, x, y); ctx.fillText(w.text, x, y);
+            ctx.shadowBlur = 0; ctx.shadowColor = "transparent";
+          }
+          if(on && hlStyle === "underline"){
+            ctx.fillStyle = hl; roundRect(x - w.w, y + arSize * 0.38, w.w, Math.max(4, arSize * 0.06), 4); ctx.fill();
+          }
+        }
+        x -= w.w + space;
+      });
+      y += arLH;
+    });
+  });
+
+  // Translation
+  if(trLines.length){
+    withMotion(trM, trTop + trH / 2, () => {
+      if(trFxSel === "band"){
+        ctx.font = trFontCss(trSize);
+        const bw = Math.min(W - 40, Math.max(...trLines.map(l => ctx.measureText(l).width)) + 70);
+        const n = parseInt(trCol.slice(1), 16), lum = ((n >> 16 & 255) * 0.299 + (n >> 8 & 255) * 0.587 + (n & 255) * 0.114) / 255;
+        band(W/2 - bw/2, trTop - 4, bw, trH + 24, trM.a, lum < 0.5 ? "#ffffff" : null); // dark text gets a light band
+      }
+      let y = trTop + trSize * 1.05;
+      ctx.direction = "ltr"; ctx.textAlign = "center";
+      ctx.font = trFontCss(trSize);
+      ctx.globalAlpha = trM.a * 0.95;
+      trLines.forEach(l => { drawWord(l, W/2, y, trSize, trCol, trFxSel, { solid:true, glow: trCol }); y += trLH; });
+      ctx.font = trFontCss(trSize * 0.7, 500); ctx.globalAlpha = trM.a * 0.6; ctx.fillStyle = trCol;
+      ctx.fillText(pages.length > 1 ? `[${a.key}]  ${pi + 1}/${pages.length}` : `[${a.key}]`, W/2, y + 6);
+    });
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawPlaceholder(){
+  ctx.textAlign = "center"; ctx.direction = "rtl";
+  ctx.font = arFontCss(92);
+  drawWord("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", W/2, H*0.47, 92, $("txtColor").value, $("fx").value, { glow: $("hlColor").value, light:"#ffffff" });
+  ctx.direction = "ltr"; ctx.font = `400 34px "Figtree", sans-serif`; ctx.globalAlpha = .7; ctx.fillStyle = $("trColor").value;
+  ctx.fillText("Load verses to begin", W/2, H*0.47 + 120); ctx.globalAlpha = 1;
+}
+
+// ---------- playback & export ----------
+let rafId = 0;
+function loop(){
+  const t = playing ? audioCtx.currentTime - startAt : 0;
+  drawFrame(t);
+  if(playing && t >= project.total){ finish(); return; }
+  if(recorder) $("prog").value = t / project.total;
+  rafId = requestAnimationFrame(loop);
+}
+
+function startPlayback(extraDest){
+  if(!project) return;
+  stopPlayback();
+  audioCtx.resume();
+  source = audioCtx.createBufferSource();
+  source.buffer = project.buffer;
+  source.connect(audioCtx.destination);
+  if(extraDest) source.connect(extraDest);
+  startAt = audioCtx.currentTime + 0.1;
+  source.start(startAt);
+  if($("bgPreset").value === "video"){ bgVideo.currentTime = 0; bgVideo.play().catch(()=>{}); }
+  playing = true;
+  $("stop").disabled = false; $("play").disabled = true;
+  cancelAnimationFrame(rafId); loop();
+}
+function stopPlayback(){
+  if(source){ try{ source.stop(); }catch(e){} source.disconnect(); source = null; }
+  playing = false; cancelAnimationFrame(rafId);
+  $("stop").disabled = true; $("play").disabled = !project;
+  if(recorder && recorder.state === "recording") recorder.stop();
+}
+function finish(){ stopPlayback(); drawFrame(project.total); }
+
+function pickMime(){
+  const opts = ["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"];
+  return opts.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || "";
+}
+
+function exportVideo(){
+  if(!project) return;
+  const mime = pickMime();
+  if(!window.MediaRecorder){ say("This browser can't record video. Use a recent Chrome, Edge or Firefox."); return; }
+  const dest = audioCtx.createMediaStreamDestination();
+  const stream = new MediaStream([...cv.captureStream(30).getVideoTracks(), ...dest.stream.getAudioTracks()]);
+  const chunks = [];
+  recorder = new MediaRecorder(stream, mime ? {mimeType: mime, videoBitsPerSecond: 8_000_000} : undefined);
+  recorder.ondataavailable = e => e.data.size && chunks.push(e.data);
+  recorder.onstop = () => {
+    const type = recorder.mimeType || mime || "video/webm";
+    const ext = type.includes("mp4") ? "mp4" : "webm";
+    const blob = new Blob(chunks, {type});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${batch.prefix}${project.surah.name_simple.replace(/\W+/g,"-")}_${project.ayahs[0].num}-${project.ayahs.at(-1).num}.${ext}`;
+    document.body.appendChild(a); a.click(); a.remove();
+    recorder = null; $("prog").hidden = true; $("export").disabled = $("load").disabled = false;
+    say(`Saved as .${ext}.` + (ext === "webm" ? " YouTube and TikTok accept WebM; convert to MP4 for Instagram if needed." : ""));
+  };
+  $("export").disabled = $("load").disabled = true;
+  $("prog").hidden = false; $("prog").value = 0;
+  say("Recording in real time. Keep this tab visible until it finishes.");
+  recorder.start(500);
+  startPlayback(dest);
+}
+
+// ---------- wiring ----------
+$("load").onclick = loadProject;
+$("play").onclick = () => { say("Playing preview…"); startPlayback(); };
+$("stop").onclick = () => { stopPlayback(); drawFrame(0); say("Stopped."); };
+$("export").onclick = () => (window.VideoEncoder && window.AudioEncoder && window.Mp4Muxer) ? exportMp4() : exportVideo();
+
+// ---------- batch auto-generate ----------
+const batch = { running:false, cancel:false, prefix:"" };
+let batchStyleBackup = null;
+const BG_QUERIES = ["clouds","ocean waves","mountains","forest","rain","night sky","desert","sunrise","waterfall","stars","lake","snowy mountains","sunset sky"];
+const POOLS = {
+  juz30: Array.from({length:37}, (_, i) => 78 + i),
+  popular: [1,18,36,55,56,67,93,94,97,103,112,113,114],
+  all: Array.from({length:114}, (_, i) => i + 1)
+};
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const durCache = {};
+
+async function ayahDurations(surah, recId){
+  const k = surah + "/" + recId;
+  if(durCache[k]) return durCache[k];
+  const info = await qdcAudio(surah, String(recId).startsWith("ea:") ? "7" : recId); // EveryAyah: Alafasy's lengths as an estimate
+  const d = {};
+  Object.entries(info.timings).forEach(([key, t]) => { d[+key.split(":")[1]] = Math.max(0.5, (t.to - t.from) / 1000); });
+  return durCache[k] = d;
+}
+function extend(ch, d, start, minS, maxS){
+  let end = start, total = d[start] || 6;
+  while(total < minS && end < ch.verses_count && total + (d[end + 1] || 6) <= maxS){ end++; total += d[end] || 6; }
+  return { end, total };
+}
+// Well-known passages with meaningful start and end points
+const PASSAGES = [
+  {t:"Al-Fatiha",s:1,a:1,b:7,th:"dua"},
+  {t:"Ayat al-Kursi",s:2,a:255,b:255,th:"tawhid"},
+  {t:"Last verses of Al-Baqarah",s:2,a:285,b:286,th:"dua"},
+  {t:"Remember Me, I will remember you",s:2,a:152,b:157,th:"patience"},
+  {t:"I am near",s:2,a:186,b:186,th:"dua"},
+  {t:"Perhaps you dislike a thing",s:2,a:216,b:216,th:"patience"},
+  {t:"Rabbana atina",s:2,a:201,b:201,th:"dua"},
+  {t:"Do not let our hearts deviate",s:3,a:8,b:9,th:"dua"},
+  {t:"Owner of all sovereignty",s:3,a:26,b:27,th:"tawhid"},
+  {t:"Allah is sufficient for us",s:3,a:173,b:174,th:"patience"},
+  {t:"Hasten to forgiveness",s:3,a:133,b:136,th:"mercy"},
+  {t:"Every soul will taste death",s:3,a:185,b:185,th:"akhirah"},
+  {t:"Signs for people of understanding",s:3,a:190,b:194,th:"tawhid"},
+  {t:"The keys of the unseen",s:6,a:59,b:59,th:"tawhid"},
+  {t:"Dua of Adam",s:7,a:23,b:23,th:"dua"},
+  {t:"Last verses of At-Tawbah",s:9,a:128,b:129,th:"patience"},
+  {t:"Hearts find rest",s:13,a:28,b:29,th:"mercy"},
+  {t:"If you are grateful",s:14,a:7,b:7,th:"guidance"},
+  {t:"Kindness to parents",s:17,a:23,b:24,th:"guidance"},
+  {t:"Dua of the people of the cave",s:18,a:10,b:10,th:"dua"},
+  {t:"End of Al-Kahf",s:18,a:107,b:110,th:"akhirah"},
+  {t:"Dua of Musa",s:20,a:25,b:28,th:"dua"},
+  {t:"Dua of Ayyub",s:21,a:83,b:84,th:"dua"},
+  {t:"Dua of Yunus",s:21,a:87,b:88,th:"dua"},
+  {t:"The successful believers",s:23,a:1,b:11,th:"guidance"},
+  {t:"Ayat an-Nur",s:24,a:35,b:35,th:"tawhid"},
+  {t:"Servants of the Most Merciful",s:25,a:63,b:67,th:"guidance"},
+  {t:"Advice of Luqman",s:31,a:16,b:19,th:"guidance"},
+  {t:"End of Ya-Sin",s:36,a:77,b:83,th:"akhirah"},
+  {t:"Do not despair of Allah's mercy",s:39,a:53,b:54,th:"mercy"},
+  {t:"Call upon Me",s:40,a:60,b:60,th:"dua"},
+  {t:"Believers are brothers",s:49,a:10,b:13,th:"guidance"},
+  {t:"Closer than the jugular vein",s:50,a:16,b:18,th:"akhirah"},
+  {t:"Ar-Rahman",s:55,a:1,b:13,th:"tawhid"},
+  {t:"Everyone on earth will perish",s:55,a:26,b:30,th:"akhirah"},
+  {t:"The life of this world",s:57,a:20,b:21,th:"akhirah"},
+  {t:"End of Al-Hashr",s:59,a:21,b:24,th:"tawhid"},
+  {t:"No calamity except by permission",s:64,a:11,b:11,th:"patience"},
+  {t:"Whoever fears Allah",s:65,a:2,b:3,th:"patience"},
+  {t:"Al-Mulk",s:67,a:1,b:5,th:"tawhid"},
+  {t:"Al-A'la",s:87,a:1,b:19,th:"akhirah"},
+  {t:"The tranquil soul",s:89,a:27,b:30,th:"mercy"},
+  {t:"Ad-Duha",s:93,a:1,b:11,th:"mercy"},
+  {t:"Ash-Sharh",s:94,a:1,b:8,th:"patience"},
+  {t:"Al-Qadr",s:97,a:1,b:5,th:"tawhid"},
+  {t:"Az-Zalzalah",s:99,a:1,b:8,th:"akhirah"},
+  {t:"At-Takathur",s:102,a:1,b:8,th:"akhirah"},
+  {t:"Al-Asr",s:103,a:1,b:3,th:"guidance"},
+  {t:"Al-Kawthar",s:108,a:1,b:3,th:"mercy"},
+  {t:"An-Nasr",s:110,a:1,b:3,th:"tawhid"},
+  {t:"Al-Ikhlas",s:112,a:1,b:4,th:"tawhid"},
+  {t:"Al-Falaq",s:113,a:1,b:5,th:"dua"},
+  {t:"An-Nas",s:114,a:1,b:6,th:"dua"}
+];
+const span = (d, a, b) => { let t = 0; for(let i = a; i <= b; i++) t += d[i] || 6; return t; };
+const shuffle = arr => { const x = [...arr]; for(let i = x.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; } return x; };
+const secCache = {};
+async function sectionsOf(surah){
+  if(secCache[surah]) return secCache[surah];
+  const vd = await getJSON(`${API}/verses/by_chapter/${surah}?fields=ruku_number&per_page=300`);
+  const out = [];
+  vd.verses.forEach(v => {
+    const last = out[out.length - 1];
+    if(last && last.r === v.ruku_number) last.b = v.verse_number;
+    else out.push({ r: v.ruku_number, a: v.verse_number, b: v.verse_number });
+  });
+  return secCache[surah] = out;
+}
+// merge neighbouring sections until min length is reached (never cuts inside one)
+function growSections(secs, i, d, minS, maxS){
+  let a = secs[i].a, b = secs[i].b, j = i;
+  while(span(d, a, b) < minS && j + 1 < secs.length && span(d, a, secs[j + 1].b) <= maxS){ j++; b = secs[j].b; }
+  return { a, b, next: j + 1 };
+}
+async function planPassage(mode, st, recId, minS, maxS){
+  if(mode === "curated"){
+    while(st.queue.length){
+      const p = st.queue.shift();
+      const d = await ayahDurations(p.s, recId);
+      if(span(d, p.a, p.b) <= maxS) return { surah:p.s, start:p.a, end:p.b, title:p.t };
+    }
+    return null;
+  }
+  if(mode === "surahs"){
+    while(st.queue.length){
+      const s = st.queue.shift(), ch = chapters.find(c => c.id === s);
+      const d = await ayahDurations(s, recId);
+      if(span(d, 1, ch.verses_count) <= maxS) return { surah:s, start:1, end:ch.verses_count, title:"Surah " + ch.name_simple };
+    }
+    return null;
+  }
+  if(mode === "sections"){
+    for(let tries = 0; tries < 25; tries++){
+      const s = pick(st.pool), secs = await sectionsOf(s), d = await ayahDurations(s, recId);
+      const i = rand(0, secs.length - 1), key = s + ":" + secs[i].a;
+      if(st.used.has(key) || span(d, secs[i].a, secs[i].b) > maxS) continue;
+      const g = growSections(secs, i, d, minS, maxS);
+      st.used.add(key);
+      return { surah:s, start:g.a, end:g.b };
+    }
+    return null;
+  }
+  // order: walk the selected surah section by section
+  const secs = await sectionsOf(st.surah), d = await ayahDurations(st.surah, recId);
+  if(st.idx == null) st.idx = Math.max(0, secs.findIndex(x => x.b >= st.ayah));
+  if(st.idx >= secs.length) return null;
+  const g = growSections(secs, st.idx, d, minS, maxS);
+  st.part = (st.part || 0) + 1; st.idx = g.next;
+  return { surah:st.surah, start:g.a, end:g.b, title:`${chapters.find(c => c.id === st.surah).name_simple} · Part ${st.part}` };
+}
+
+async function choosePassage(pool, recId, minS, maxS, used){
+  for(let tries = 0; tries < 15; tries++){
+    const surah = pick(pool), ch = chapters.find(c => c.id === surah);
+    const d = await ayahDurations(surah, recId);
+    const start = rand(1, ch.verses_count);
+    if(used.has(surah + ":" + start) || (d[start] || 6) > maxS) continue;
+    const { end, total } = extend(ch, d, start, minS, maxS);
+    if(total < minS * 0.6 && tries < 12) continue;
+    used.add(surah + ":" + start);
+    return { surah, start, end };
+  }
+  throw new Error("No passage fits that length. Widen the min/max range.");
+}
+async function nextInOrder(cur, recId, minS, maxS){
+  const ch = chapters.find(c => c.id === cur.surah);
+  if(cur.ayah > ch.verses_count) return null;
+  const d = await ayahDurations(cur.surah, recId);
+  const start = cur.ayah, { end } = extend(ch, d, start, minS, maxS);
+  cur.ayah = end + 1;
+  return { surah: cur.surah, start, end };
+}
+function setBgUrl(url){
+  return new Promise(async (res, rej) => {
+    try{
+      const blob = await (await fetch(url)).blob();
+      if(pxState.blobUrl) URL.revokeObjectURL(pxState.blobUrl);
+      pxState.blobUrl = URL.createObjectURL(blob);
+      bgVideo.removeAttribute("crossorigin");
+      bgVideo.onloadeddata = () => res();
+      bgVideo.onerror = () => rej(new Error("clip failed to load"));
+      bgVideo.src = pxState.blobUrl;
+      setTimeout(() => rej(new Error("clip timed out")), 30000);
+    }catch(e){ rej(e); }
+  });
+}
+// Finds a stock clip whose length is close to the recitation (slightly longer is best, so it never loops)
+async function stockCandidates(key, query){
+  const q = encodeURIComponent(query), page = rand(1, 2);
+  if(src() === "pixabay"){
+    const d = await getJSON(`https://pixabay.com/api/videos/?key=${encodeURIComponent(key)}&q=${q}&safesearch=true&per_page=50&page=${page}`);
+    return (d.hits || []).map(h => {
+      const v = h.videos || {};
+      const f = ["large","medium","small"].map(k => v[k]).filter(x => x && x.url)
+        .sort((a, b) => Math.abs(Math.max(a.width, a.height) - 1920) - Math.abs(Math.max(b.width, b.height) - 1920))[0];
+      return f ? { url: f.url, dur: h.duration, by: h.user, site: "Pixabay" } : null;
+    }).filter(Boolean);
+  }
+  const r = await fetch(`https://api.pexels.com/videos/search?query=${q}&orientation=portrait&per_page=40&page=${page}`, { headers:{ Authorization:key } });
+  if(!r.ok) throw new Error(`Pexels returned ${r.status}`);
+  const d = await r.json();
+  return (d.videos || []).map(v => { const f = pickFile(v.video_files); return f ? { url: f.link, dur: v.duration, by: v.user && v.user.name, site: "Pexels" } : null; }).filter(Boolean);
+}
+const clipScore = (dur, target) => dur >= target ? (dur - target) : (target - dur) * 3; // looping is penalised
+async function pickStockClip(key, target, avoid){
+  let pool = [];
+  const queries = shuffle(BG_QUERIES).slice(0, 4);
+  for(const q of queries){
+    try{ pool = pool.concat(await stockCandidates(key, q)); }catch(e){ console.warn("Stock search failed:", e); }
+    pool = pool.filter(c => !avoid.has(c.url));
+    const good = pool.filter(c => c.dur >= target && c.dur <= target * 1.3 + 3);
+    if(good.length >= 3) break; // enough close matches
+  }
+  if(!pool.length) throw new Error("no stock clips found");
+  pool.sort((a, b) => clipScore(a.dur, target) - clipScore(b.dur, target));
+  const best = clipScore(pool[0].dur, target);
+  const close = pool.filter(c => clipScore(c.dur, target) <= best + 5).slice(0, 3);
+  return pick(close); // a little variety, but only among clips that are about as close as the best one
+}
+const usedClips = new Set();
+async function randomBackground(mode, target){
+  if(mode === "keep") return "";
+  const strict = $("bNoPreset").checked;
+  if(mode === "stock"){
+    const key = store.get(src() + "Key");
+    if(!key){
+      if(strict) throw new Error("no stock video key saved. Add your Pixabay or Pexels key, or turn off \"Only real stock videos\"");
+    }else{
+      for(let attempt = 0; attempt < 3; attempt++){
+        try{
+          const c = await pickStockClip(key, target, usedClips);
+          usedClips.add(c.url);
+          await setBgUrl(c.url); $("bgPreset").value = "video";
+          return `${c.dur}s clip by ${c.by || "a creator"} on ${c.site}`;
+        }catch(e){ console.warn("Stock clip failed, trying another:", e); }
+      }
+      if(strict) throw new Error("couldn't load a stock video (checked 3 clips)");
+    }
+  }
+  $("bgPreset").value = pick(["night", "dawn", "emerald"]);
+  return "built-in background";
+}
+
+async function runBatch(){
+  if(!(window.VideoEncoder && window.AudioEncoder && window.Mp4Muxer)){ say("Auto-generate needs Chrome or Edge."); return; }
+  if(!chapters.length){ say("Surah list hasn't loaded yet."); return; }
+  const n = Math.max(1, Math.min(100, +$("bCount").value || 1));
+  const minS = +$("bMin").value || 20, maxS = Math.max(minS + 5, +$("bMax").value || 55);
+  if($("bBg").value === "stock" && !$("pxKey").value.trim())
+    $("bStatus").textContent = "No stock key saved, so random presets will be used.";
+  const pool = $("bPool").value === "current" ? [+$("surah").value] : POOLS[$("bPool").value];
+  const reciters = [...$("reciter").options].map(o => o.value);
+  const mode = $("bMode").value, theme = $("bTheme").value;
+  const st = { pool, used: new Set(), surah: +$("surah").value, ayah: +$("from").value || 1, queue: [] };
+  if(mode === "curated") st.queue = shuffle(PASSAGES.filter(p => theme === "all" || p.th === theme));
+  if(mode === "surahs") st.queue = shuffle(pool);
+  batchStyleBackup = $("bStyle").value === "current" ? null : currentStyle();
+  usedClips.clear();
+  batch.running = true; batch.cancel = false;
+  $("bStart").disabled = true; $("bCancel").disabled = false;
+  let made = 0, failedCount = 0;
+  for(let i = 0; i < n && !batch.cancel; i++){
+    const label = `Short ${i + 1} of ${n}`;
+    try{
+      if($("bReciter").value === "random") $("reciter").value = pick(reciters.filter(r => !r.startsWith("ea:")));
+      if($("bReciter").value === "randomAll") $("reciter").value = pick(reciters);
+      const bs = $("bStyle").value;
+      if(bs === "random") applyPreset(pick(Object.keys(allPresets())));
+      else if(bs !== "current") applyPreset(bs);
+      await ensureFont();
+      const recId = $("reciter").value;
+      $("bStatus").textContent = `${label}: choosing verses…`;
+      const p = await planPassage(mode, st, recId, minS, maxS);
+      if(!p){
+        $("bStatus").textContent = mode === "order" ? "Reached the end of the surah."
+          : "No more passages fit. Raise the max length or pick another theme or surah list.";
+        break;
+      }
+      $("surah").value = p.surah; $("from").value = p.start; $("to").value = p.end;
+      project = null;
+      await loadProject();
+      if(!project) throw new Error(statusEl.textContent);
+      $("bStatus").textContent = `${label}: finding a ${Math.round(project.total)}s background…`;
+      const bgInfo = await randomBackground($("bBg").value, project.total);
+      if(bgInfo) console.log(`${label}: ${bgInfo} for ${project.total.toFixed(1)}s recitation`);
+      project.title = p.title || "";
+      $("bStatus").textContent = `${label}: rendering ${project.surah.name_simple} ${p.start}–${p.end}…`;
+      batch.prefix = String(i + 1).padStart(2, "0") + "_";
+      if(await exportMp4()) made++; else failedCount++;
+    }catch(e){
+      console.error(e); failedCount++;
+      $("bStatus").textContent = `${label} skipped: ${e.message}`;
+    }
+  }
+  batch.prefix = ""; batch.running = false;
+  if(batchStyleBackup){ Object.entries(batchStyleBackup).forEach(([id, v]) => { if($(id)) $(id).value = v; }); saveStyle(); batchStyleBackup = null; drawFrame(0.0001); }
+  $("bStart").disabled = false; $("bCancel").disabled = true;
+  const msg = `${batch.cancel ? "Cancelled. " : "Done. "}${made} short${made === 1 ? "" : "s"} saved to your Downloads folder` +
+              (failedCount ? `, ${failedCount} skipped.` : ".");
+  $("bStatus").textContent = msg; say(msg);
+  batch.cancel = false;
+}
+$("bStart").onclick = runBatch;
+function syncNoPreset(){ $("bNoPresetWrap").hidden = $("bBg").value !== "stock"; }
+$("bBg").addEventListener("change", syncNoPreset); syncNoPreset();
+try{ const v = localStorage.getItem("ayahNoPreset"); if(v != null) $("bNoPreset").checked = v === "1"; }catch(e){}
+$("bNoPreset").addEventListener("change", () => { try{ localStorage.setItem("ayahNoPreset", $("bNoPreset").checked ? "1" : "0"); }catch(e){} });
+function syncRecHint(){ $("recHint").hidden = !$("reciter").value.startsWith("ea:"); }
+$("reciter").addEventListener("change", syncRecHint); syncRecHint();
+function syncBatchUi(){
+  const m = $("bMode").value;
+  $("bThemeWrap").hidden = m !== "curated";
+  $("bPoolWrap").hidden = !(m === "surahs" || m === "sections");
+}
+$("bMode").addEventListener("change", syncBatchUi); syncBatchUi();
+$("bCancel").onclick = () => { batch.cancel = true; $("bStatus").textContent = "Cancelling after this frame…"; };
+
+// ---------- frame-accurate MP4 export (WebCodecs) ----------
+const FPS = 30;
+function saveBlob(blob, ext){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${batch.prefix}${project.surah.name_simple.replace(/\W+/g,"-")}_${project.ayahs[0].num}-${project.ayahs.at(-1).num}.${ext}`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+}
+function seekVideo(t){
+  // seek, then wait until the new frame is actually decoded, so no black or stale frames get encoded
+  return new Promise(res => {
+    if(bgVideo.readyState < 1 || !bgVideo.duration){ res(); return; }
+    const d = bgVideo.duration;
+    const target = Math.min(d - 0.05, t % Math.max(0.1, d - 0.05));
+    if(Math.abs(bgVideo.currentTime - target) < 0.0005 && bgVideo.readyState >= 2){ res(); return; }
+    let finished = false;
+    const finish = () => { if(finished) return; finished = true; bgVideo.removeEventListener("seeked", onSeeked); res(); };
+    const onSeeked = () => {
+      if(bgVideo.requestVideoFrameCallback){
+        bgVideo.requestVideoFrameCallback(() => finish());
+        setTimeout(finish, 250);
+      }else if(bgVideo.readyState >= 2) finish();
+      else bgVideo.addEventListener("canplay", finish, { once:true });
+    };
+    bgVideo.addEventListener("seeked", onSeeked);
+    bgVideo.currentTime = target;
+    setTimeout(finish, 3000); // last resort; the last good frame is reused
+  });
+}
+async function pickVideoCodec(){
+  for(const codec of ["avc1.640028","avc1.4d0028","avc1.42002a"]){
+    const cfg = { codec, width:W, height:H, bitrate:10_000_000, framerate:FPS };
+    try{ if((await VideoEncoder.isConfigSupported(cfg)).supported) return cfg; }catch(e){}
+  }
+  return null;
+}
+async function exportMp4(){
+  if(!project) return;
+  stopPlayback();
+  await ensureFont();
+  const vcfg = await pickVideoCodec();
+  const sr = project.buffer.sampleRate;
+  const acfg = { codec:"mp4a.40.2", sampleRate:sr, numberOfChannels:2, bitrate:192000 };
+  let audioOk = false;
+  try{ audioOk = (await AudioEncoder.isConfigSupported(acfg)).supported; }catch(e){}
+  if(!vcfg || !audioOk){ say("This browser can't encode MP4 here, so recording in real time instead."); return exportVideo(); }
+
+  $("export").disabled = $("load").disabled = $("play").disabled = true;
+  $("prog").hidden = false; $("prog").value = 0;
+  const useVideo = $("bgPreset").value === "video" && bgVideo.readyState >= 1;
+  if(useVideo) bgVideo.pause();
+
+  const muxer = new Mp4Muxer.Muxer({
+    target: new Mp4Muxer.ArrayBufferTarget(),
+    video: { codec:"avc", width:W, height:H, frameRate:FPS },
+    audio: { codec:"aac", numberOfChannels:2, sampleRate:sr },
+    fastStart: "in-memory"
+  });
+  let failed = null;
+  const venc = new VideoEncoder({ output:(c,m) => muxer.addVideoChunk(c,m), error:e => failed = e });
+  venc.configure(vcfg);
+  const aenc = new AudioEncoder({ output:(c,m) => muxer.addAudioChunk(c,m), error:e => failed = e });
+  aenc.configure(acfg);
+
+  try{
+    // audio: feed the whole stitched buffer in 1-second pieces
+    const L = project.buffer.getChannelData(0), R = project.buffer.getChannelData(1);
+    for(let i = 0; i < L.length; i += sr){
+      const n = Math.min(sr, L.length - i);
+      const data = new Float32Array(n * 2);
+      data.set(L.subarray(i, i + n), 0); data.set(R.subarray(i, i + n), n);
+      const ad = new AudioData({ format:"f32-planar", sampleRate:sr, numberOfFrames:n, numberOfChannels:2,
+                                 timestamp: Math.round(i / sr * 1e6), data });
+      aenc.encode(ad); ad.close();
+    }
+    // video: render each frame at its exact time
+    const frames = Math.ceil(project.total * FPS);
+    for(let f = 0; f < frames; f++){
+      if(failed) throw failed;
+      if(batch.cancel) throw new Error("Cancelled");
+      const t = f / FPS;
+      if(useVideo) await seekVideo(t);
+      drawFrame(t);
+      const vf = new VideoFrame(cv, { timestamp: Math.round(t * 1e6), duration: Math.round(1e6 / FPS) });
+      venc.encode(vf, { keyFrame: f % (FPS * 2) === 0 }); vf.close();
+      while(venc.encodeQueueSize > 6) await new Promise(r => setTimeout(r, 4));
+      if(f % 5 === 0){
+        $("prog").value = f / frames;
+        say(`Rendering frame ${f} of ${frames}…`);
+        await new Promise(r => setTimeout(r, 0));
+      }
+    }
+    await venc.flush(); await aenc.flush();
+    if(failed) throw failed;
+    muxer.finalize();
+    saveBlob(new Blob([muxer.target.buffer], { type:"video/mp4" }), "mp4");
+    say(`Exported a ${project.total.toFixed(1)}s MP4 (1080×1920, 30 fps). Ready for Shorts, Reels and TikTok.`);
+    return true;
+  }catch(e){
+    console.error(e);
+    say(`Export failed: ${e.message || e}. Try a shorter range or the built-in background.`);
+    return false;
+  }finally{
+    try{ venc.close(); aenc.close(); }catch(e){}
+    $("prog").hidden = true;
+    $("export").disabled = $("load").disabled = $("play").disabled = false;
+    drawFrame(0);
+  }
+}
+$("bgFile").onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  bgVideo.src = URL.createObjectURL(f);
+  $("bgPreset").value = "video";
+  bgVideo.play().then(()=>{ if(!playing) bgVideo.pause(); }).catch(()=>{});
+  bgVideo.onloadeddata = () => { if(!playing) drawFrame(0); };
+};
+// ---------- Pexels stock search ----------
+const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+                set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+const SOURCES = {
+  pixabay: { label:"Pixabay API key", hint:"Sign up free at pixabay.com, then copy your key from pixabay.com/api/docs. Clips are cropped to 9:16 automatically. Your key stays in this browser only." },
+  pexels:  { label:"Pexels API key",  hint:"Key from pexels.com/api. Results are portrait clips. Your key stays in this browser only." }
+};
+const src = () => $("pxSource").value;
+function syncSource(){
+  $("pxKeyLabel").textContent = SOURCES[src()].label;
+  $("pxHint").textContent = SOURCES[src()].hint;
+  $("pxKey").value = store.get(src() + "Key") || "";
+  $("pxResults").innerHTML = ""; $("pxMore").hidden = true;
+}
+$("pxSource").value = store.get("stockSource") || "pixabay";
+$("pxSource").addEventListener("change", () => { store.set("stockSource", src()); syncSource(); });
+syncSource();
+$("pxKey").addEventListener("change", () => store.set(src() + "Key", $("pxKey").value.trim()));
+const pxState = { query:"", page:1, blobUrl:null };
+["clouds","ocean waves","mountains","forest","rain","night sky","desert","sunrise","waterfall"].forEach(q => {
+  const b = document.createElement("button"); b.textContent = q;
+  b.onclick = () => { $("pxQuery").value = q; pexelsSearch(true); };
+  $("pxChips").appendChild(b);
+});
+$("pxGo").onclick = () => pexelsSearch(true);
+$("pxQuery").addEventListener("keydown", e => { if(e.key === "Enter") pexelsSearch(true); });
+$("pxMore").onclick = () => pexelsSearch(false);
+
+async function pexelsSearch(fresh){
+  const key = $("pxKey").value.trim();
+  const q = $("pxQuery").value.trim();
+  if(!key){ say(`Paste your ${src() === "pixabay" ? "Pixabay" : "Pexels"} API key first.`); return; }
+  if(!q) return;
+  store.set(src() + "Key", key);
+  if(fresh){ pxState.page = 1; pxState.query = q; $("pxResults").innerHTML = ""; }
+  if(src() === "pixabay") return pixabaySearch(key);
+  say(`Searching Pexels for "${pxState.query}"…`);
+  try{
+    const r = await fetch(`https://api.pexels.com/videos/search?query=${encodeURIComponent(pxState.query)}&orientation=portrait&size=medium&per_page=15&page=${pxState.page}`,
+      { headers: { Authorization: key } });
+    if(r.status === 401 || r.status === 403) throw new Error("the API key was rejected");
+    if(!r.ok) throw new Error(`Pexels returned ${r.status}`);
+    const d = await r.json();
+    d.videos.forEach(v => {
+      const file = pickFile(v.video_files); if(!file) return;
+      const b = document.createElement("button");
+      b.title = `${v.duration}s by ${v.user && v.user.name}`;
+      b.innerHTML = `<img loading="lazy" alt="" src="${v.image}"><span>${v.duration}s</span>`;
+      b.onclick = () => useStock(file.link, b, v);
+      $("pxResults").appendChild(b);
+    });
+    pxState.page++;
+    $("pxMore").hidden = !d.next_page;
+    say(d.videos.length ? "Tap a clip to use it as the background." : "No clips found. Try another word.");
+  }catch(e){ say(`Stock search failed: ${e.message}.`); }
+}
+
+async function pixabaySearch(key){
+  say(`Searching Pixabay for "${pxState.query}"…`);
+  try{
+    const r = await fetch(`https://pixabay.com/api/videos/?key=${encodeURIComponent(key)}&q=${encodeURIComponent(pxState.query)}&safesearch=true&per_page=18&page=${pxState.page}`);
+    if(r.status === 400 || r.status === 401 || r.status === 403) throw new Error("the API key was rejected or the search is invalid");
+    if(!r.ok) throw new Error(`Pixabay returned ${r.status}`);
+    const d = await r.json();
+    d.hits.forEach(h => {
+      const v = h.videos || {};
+      // pick the version closest to 1920 on its long side
+      const file = ["large","medium","small"].map(k => v[k]).filter(f => f && f.url)
+        .sort((a,b) => Math.abs(Math.max(a.width,a.height) - 1920) - Math.abs(Math.max(b.width,b.height) - 1920))[0];
+      if(!file) return;
+      const thumb = (v.medium && v.medium.thumbnail) || (v.small && v.small.thumbnail) || "";
+      const b = document.createElement("button");
+      b.title = `${h.duration}s by ${h.user}`;
+      b.innerHTML = `<img loading="lazy" alt="" src="${thumb}"><span>${h.duration}s</span>`;
+      b.onclick = () => useStock(file.url, b, { user: { name: h.user }, site: "Pixabay" });
+      $("pxResults").appendChild(b);
+    });
+    $("pxMore").hidden = pxState.page * 18 >= d.totalHits;
+    pxState.page++;
+    say(d.hits.length ? "Tap a clip to use it as the background." : "No clips found. Try another word.");
+  }catch(e){ say(`Stock search failed: ${e.message}.`); }
+}
+
+function pickFile(files){
+  const mp4 = files.filter(f => f.file_type === "video/mp4" && f.link);
+  const portrait = mp4.filter(f => f.height >= f.width);
+  const pool = portrait.length ? portrait : mp4;
+  // closest to 1920 tall without going huge
+  return pool.sort((a,b) => Math.abs((a.height||0) - 1920) - Math.abs((b.height||0) - 1920))[0];
+}
+
+async function useStock(link, btn, v){
+  document.querySelectorAll(".results button").forEach(x => x.classList.remove("sel"));
+  btn.classList.add("sel");
+  say("Downloading clip…");
+  try{
+    const blob = await (await fetch(link)).blob();   // blob keeps the canvas exportable
+    if(pxState.blobUrl) URL.revokeObjectURL(pxState.blobUrl);
+    pxState.blobUrl = URL.createObjectURL(blob);
+    bgVideo.removeAttribute("crossorigin");
+    bgVideo.src = pxState.blobUrl;
+  }catch(e){
+    bgVideo.crossOrigin = "anonymous";   // fallback: stream directly
+    bgVideo.src = link;
+  }
+  $("bgPreset").value = "video";
+  bgVideo.onloadeddata = () => { if(!playing) drawFrame(0); say(`Background set. Video by ${v.user ? v.user.name : "a creator"} on ${v.site || "Pexels"}.`); };
+  bgVideo.play().then(() => { if(!playing) bgVideo.pause(); }).catch(() => {});
+}
+
+loadStyle();
+fillPresetMenus((() => { try{ return localStorage.getItem("ayahPresetName") || ""; }catch(e){ return ""; } })());
+$("stylePreset").addEventListener("change", () => {
+  const n = $("stylePreset").value;
+  try{ localStorage.setItem("ayahPresetName", n); }catch(e){}
+  if(n) applyPreset(n);
+  $("presetDelete").hidden = !userPresets()[n];
+});
+$("presetSave").onclick = () => {
+  const name = $("presetName").value.trim();
+  if(!name){ say("Type a name for your style first."); $("presetName").focus(); return; }
+  if(PRESETS[name]){ say("That name is used by a built-in style. Pick another name."); return; }
+  const mine = userPresets(); mine[name] = currentStyle();
+  try{ localStorage.setItem("ayahUserPresets", JSON.stringify(mine)); localStorage.setItem("ayahPresetName", name); }catch(e){}
+  fillPresetMenus(name); $("presetName").value = "";
+  say(`Saved "${name}". It's now in the Style preset list and in Auto-generate.`);
+};
+$("presetDelete").onclick = () => {
+  const n = $("stylePreset").value, mine = userPresets();
+  if(!mine[n]) return;
+  delete mine[n];
+  try{ localStorage.setItem("ayahUserPresets", JSON.stringify(mine)); localStorage.setItem("ayahPresetName", ""); }catch(e){}
+  fillPresetMenus(""); say(`Deleted "${n}".`);
+};
+function redraw(){ if(!playing) drawFrame(0.0001); }
+STYLE_IDS.concat(["bgPreset"]).forEach(id => {
+  $(id).addEventListener("input", () => { saveStyle(); redraw(); });
+  $(id).addEventListener("change", e => { saveStyle(); redraw(); if(e.isTrusted && $("stylePreset").value){ $("stylePreset").value = ""; $("presetDelete").hidden = true; try{ localStorage.setItem("ayahPresetName", ""); }catch(_){} } });
+});
+["txtColor","hlColor","trColor"].forEach(id => $(id).addEventListener("input", () => { $("colorPreset").value = "custom"; saveStyle(); }));
+$("colorPreset").addEventListener("change", () => {
+  const c = COLOR_PRESETS[$("colorPreset").value]; if(!c) return;
+  $("txtColor").value = c.txt; $("hlColor").value = c.hl; $("trColor").value = c.tr; $("numColor").value = c.hl; saveStyle(); redraw();
+});
+$("arFont").addEventListener("change", () => ensureFont().then(redraw));
+$("trFont").addEventListener("change", () => ensureFont().then(redraw));
+// sensible effect color when the effect changes: light for glow, dark for the others
+$("fx").addEventListener("change", () => {
+  $("fxColor").value = $("fx").value === "glow" ? ($("txtColor").value.toLowerCase() === "#15201c" ? "#0f6b55" : "#ffe6a8") : "#000000";
+  saveStyle(); redraw();
+});
+function showOffset(){
+  const v = +$("tOffset").value;
+  $("tOffsetVal").textContent = v === 0 ? "on time" : v > 0 ? `text ${v.toFixed(2)}s later` : `text ${(-v).toFixed(2)}s earlier`;
+}
+$("tOffset").addEventListener("input", showOffset); showOffset();
+
+ensureFont().then(() => document.fonts.load('84px "Amiri Quran"')).then(() => document.fonts.load('400 38px "Figtree"')).finally(() => drawFrame(0));
+loadChapters();
+
+// ---------- installable app ----------
+if("serviceWorker" in navigator && location.protocol !== "file:"){
+  navigator.serviceWorker.register("sw.js").catch(e => console.warn("Offline mode unavailable:", e));
+}
+let installEvt = null;
+window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("installBtn").hidden = false; });
+$("installBtn").onclick = async () => {
+  if(!installEvt) return;
+  installEvt.prompt();
+  const r = await installEvt.userChoice;
+  if(r.outcome === "accepted") $("installBtn").hidden = true;
+  installEvt = null;
+};
+window.addEventListener("appinstalled", () => { $("installBtn").hidden = true; say("Ayah Studio is installed. Open it from your desktop or home screen."); });
+</script>
+</body>
+</html>
